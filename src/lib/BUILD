@@ -1,10 +1,18 @@
 load("@rules_cc//cc:defs.bzl", "cc_library")
 
 cc_library(
+    name = "TrieTree",
+    srcs = ["trietree.cc"],
+    hdrs = ["trietree.h"],
+    visibility = ["//visibility:public"], 
+)
+
+cc_library(
     name = "TrojanMap",
     srcs = ["trojanmap.cc"],
     hdrs = ["trojanmap.h"],
     data = ["data.csv"],
+    deps = ["//src/lib:TrieTree"],
     visibility = ["//visibility:public"],
 )
 

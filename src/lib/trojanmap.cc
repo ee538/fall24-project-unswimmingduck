@@ -103,6 +103,17 @@ std::string TrojanMap::FindClosestName(std::string name) {
  */
 std::vector<std::string> TrojanMap::Autocomplete(std::string name) {
   std::vector<std::string> results;
+
+  std::cout<< "the autocomplete is called" << std::endl;
+
+  // get the all target id
+  std::vector<std::string> targetId = tree->find(name);
+
+  // using id to get the correct name
+  for(std::string id: targetId){
+      results.push_back(data[id].name); 
+  }
+
   return results;
 }
 
@@ -453,4 +464,43 @@ void TrojanMap::CreateGraphFromCSVFile() {
     data[n.id] = n;
   }
   fin.close();
+}
+
+
+// ######################################################################################################
+// ----------------------- Implementation of new defined function by Yiheng ZHou ------------------------
+
+/**
+ * CharDataProcess() : to iterate all the char in data of name and constructor a map that store the char and its unique id
+ */
+void TrojanMap::CharDataProcess(){
+  int id = 0;
+
+  for(const auto& pair: data){
+    
+    Node cur_node = pair.second;
+  
+    for(char c: cur_node.name){
+      c = std::tolower(c);
+      
+      if(char_id.find(c) == char_id.end()){
+        char_id[c] = id;
+        id++;
+      }
+    }
+
+  }
+}
+
+/**
+ * loadName(): loading all the data of name into TrieTree 
+ */
+void TrojanMap::loadName(){
+  for(const auto& pair: data){
+    
+    Node cur_node = pair.second;
+    
+    tree->insert(cur_node.name, pair.first);
+
+  }
 }

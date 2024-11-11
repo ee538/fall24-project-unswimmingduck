@@ -19,6 +19,10 @@
 #include <set>
 #include <vector>
 
+// --------- new include file ----------
+#include "trietree.h"
+
+
 // A Node is the location of one point in the map.
 class Node {
  public:
@@ -44,10 +48,53 @@ class Node {
 class TrojanMap {
  public:
   // Constructor
-  TrojanMap() { CreateGraphFromCSVFile(); };
+  TrojanMap() { 
+    CreateGraphFromCSVFile(); 
+    
+    // Modified by Yiheng ZHou
+    CharDataProcess();
+
+    tree = new TrieTree(char_id);
+
+    loadName();
+    };
 
   // A map of ids to Nodes.
   std::unordered_map<std::string, Node> data;
+
+  // ----------------------------- Deconstructor ------------------------------------------
+  // because we new TrieTree pointer in the constructor, so we need to release the memeroy
+  ~TrojanMap(){
+    delete tree;
+    tree = nullptr;
+  };
+
+
+  // -------------------- My Data Structure (Written by Yiheng Zhou (USC id:359-5255-886) ) ----------------------------
+  // A unorder_map to record every char id. key: char, value: the unique id of char
+  std::unordered_map<char, int> char_id;
+  
+  // Trie Data Structure Pointer
+  TrieTree* tree;
+
+  // -------------------------------------------------------------------------------------------------------------------
+
+
+
+  // ------------------------------------------------------------
+  // ---------------- New Defined Function by Yiheng Zhou -----------
+  
+  // to record every char in the data and constructor a map that store the char and its unique id
+  void CharDataProcess();
+
+  // load all the data of name into TrieTree
+  void loadName();
+  
+  // ---------------------------------------------------------
+  // ---------------------------------------------------------
+
+
+
 
   //-----------------------------------------------------
   // Read in the data
