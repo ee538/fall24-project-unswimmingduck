@@ -57,6 +57,8 @@ class TrojanMap {
     tree = new TrieTree(char_id);
 
     loadName();
+
+    construct_name_id_map();
     };
 
   // A map of ids to Nodes.
@@ -77,6 +79,8 @@ class TrojanMap {
   // Trie Data Structure Pointer
   TrieTree* tree;
 
+    std::unordered_map<std::string, std::string> name_id_map;
+
   // -------------------------------------------------------------------------------------------------------------------
 
 
@@ -89,7 +93,9 @@ class TrojanMap {
 
   // load all the data of name into TrieTree
   void loadName();
-  
+
+  //construct the name_id_map
+  void construct_name_id_map();
   // ---------------------------------------------------------
   // ---------------------------------------------------------
 

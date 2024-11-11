@@ -2,6 +2,8 @@
 #include "src/lib/trojanmap.h"
 
 #include <unordered_set>
+#include <cmath>
+const double kTolerance = 1e-5;
 
 TEST(AutoComplete, Test1) {
     
@@ -92,4 +94,25 @@ TEST(AutoComplete, Test2) {
         set.erase(search);
     }
     EXPECT_EQ(set.size(), 0);
+}
+
+
+TEST(TrojanMapTest, FindPosition) {
+  TrojanMap m;
+  
+  
+  auto position = m.GetPosition("Venice & Grand");
+  std::pair<double, double> gt1(34.035743, -118.266548); 
+    EXPECT_NEAR(position.first, gt1.first, kTolerance);
+    EXPECT_NEAR(position.second, gt1.second, kTolerance);
+  
+  position = m.GetPosition("Pico & Grand 1");
+  std::pair<double, double> gt2(34.0388531, -118.2641173); 
+  EXPECT_NEAR(position.first, gt2.first, kTolerance);
+  EXPECT_NEAR(position.second, gt2.second, kTolerance);
+  
+  // Test Unknown
+  position = m.GetPosition("XXX");
+  std::pair<double, double> gt4(-1, -1);
+  EXPECT_EQ(position, gt4);
 }

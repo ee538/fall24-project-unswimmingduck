@@ -69,6 +69,11 @@ std::string TrojanMap::GetID(const std::string &name) {
  */
 std::pair<double, double> TrojanMap::GetPosition(std::string name) {
   std::pair<double, double> results(-1, -1);
+  if(name_id_map.find(name) != name_id_map.end()){
+    std::string id = name_id_map[name];
+    results.first = data[id].lat;
+    results.second = data[id].lon;
+  }
   return results;
 }
 
@@ -502,5 +507,11 @@ void TrojanMap::loadName(){
     
     tree->insert(cur_node.name, pair.first);
 
+  }
+}
+
+void TrojanMap::construct_name_id_map(){
+    for(const auto& pair: data){  
+      name_id_map[pair.second.name] = pair.first;
   }
 }
