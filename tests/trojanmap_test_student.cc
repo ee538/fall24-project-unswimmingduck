@@ -116,3 +116,246 @@ TEST(TrojanMapTest, FindPosition) {
   std::pair<double, double> gt4(-1, -1);
   EXPECT_EQ(position, gt4);
 }
+
+
+
+// Phase 2: Item3
+TEST(TrojanMapTest, GetAllCategories) {
+  TrojanMap m;
+  
+  auto output = m.GetAllCategories();
+  std::set<std::string> expected = {
+    "artwork", "attraction", "bakery", "bank", "bar", "beauty", "beverages", "bicycle", "bicycle_rental",
+    "bus_station", "cafe", "car", "car_repair", "car_wash", "charging_station", "childcare", "clinic",
+    "clothes", "confectionery", "convenience", "copyshop", "dentist", "department_store", "driving_school",
+    "fabric", "fast_food", "food_court", "fountain", "fuel", "gallery", "hairdresser", "hospital", "hotel",
+    "library", "marketplace", "mobile_phone", "museum", "music", "optician", "parcel_locker", "parking",
+    "parking_entrance", "pharmacy", "place_of_worship", "police", "post_box", "post_office", "restaurant",
+    "school", "shoe_repair", "shoes", "skate", "social_facility", "supermarket", "theatre", "tobacco",
+    "yoga", "yes"
+  };
+  std::set<std::string> output_set(output.begin(), output.end());
+  EXPECT_EQ(output_set, expected);
+}
+
+
+// //Phase 2: Item4
+TEST(TrojanMapTest, GetAllLocationsFromCategory1) {
+  TrojanMap m;
+  
+  auto output = m.GetAllLocationsFromCategory("school");
+  std::set<std::string> expected = { "358784231",
+ "358786032",
+ "358789632",
+ "358789785",
+ "358791507",
+ "358791610",
+ "358791878",
+ "358792209",
+ "358793609",
+ "358793671",
+ "358793678",
+ "358794109",
+ "358794278",
+ "358794351",
+ "358794547",
+ "358801509",
+ "358850043",
+ "358851980",
+ "358852034",
+ "418030171",
+ "4630579201"};
+  std::set<std::string> output_set(output.begin(), output.end());
+  EXPECT_EQ(output_set, expected);
+}
+
+
+//Phase 2: Item5
+TEST(TrojanMapTest, GetLocationRegex1) {
+  TrojanMap m;
+  std::set<std::string> expected_set;
+  auto actual = m.GetLocationRegex(std::regex("dummy"));
+  std::set<std::string> actual_set(actual.begin(), actual.end());
+  EXPECT_EQ(actual_set, expected_set);
+}
+
+TEST(TrojanMapTest, GetLocationRegex2) {
+  TrojanMap m;
+  std::set<std::string> expected_set = { "1376467705",
+                                        "1376467712",
+                                        "4291117323",
+                                        "4291117324",
+                                        "6279600809",
+                                        "6279600810",
+                                        "9601938170",
+                                        "9601938171"};
+  auto actual = m.GetLocationRegex(std::regex("^Pico.*"));
+  std::set<std::string> actual_set(actual.begin(), actual.end());
+  EXPECT_EQ(expected_set, actual_set);
+}
+
+
+// Phase 2: Item-6
+TEST(TrojanMapTest, CalculateShortestPath_Dijkstra) {
+  TrojanMap m;
+  
+  // Test from Ralphs to Chick-fil-A
+  auto path = m.CalculateShortestPath_Dijkstra("Ralphs", "Target");
+  std::vector<std::string> gt{
+      "578244375",
+    "4380040154",
+    "4380040158",
+    "4380040167",
+    "6805802087",
+    "8410938469",
+    "6813416131",
+    "7645318201",
+    "6813416130",
+    "6813416129",
+    "123318563",
+    "452688940",
+    "6816193777",
+    "123408705",
+    "6816193774",
+    "452688933",
+    "452688931",
+    "123230412",
+    "6816193770",
+    "6787470576",
+    "4015442011",
+    "6816193692",
+    "6816193693",
+    "6816193694",
+    "4015377691",
+    "544693739",
+    "6816193696",
+    "6804883323",
+    "6807937309",
+    "6807937306",
+    "6816193698",
+    "4015377690",
+    "4015377689",
+    "122814447",
+    "6813416159",
+    "6813405266",
+    "4015372488",
+    "4015372487",
+    "6813405229",
+    "122719216",
+    "6813405232",
+    "4015372486",
+    "7071032399",
+    "4015372485",
+    "6813379479",
+    "6813379584",
+    "6814769289",
+    "5237417650"}; // Expected path
+  // Print the path lengths
+  std::cout << "My path length: "  << m.CalculatePathLength(path) << "miles" << std::endl;
+  std::cout << "GT path length: " << m.CalculatePathLength(gt) << "miles" << std::endl;
+  EXPECT_EQ(path, gt);
+  
+  // Reverse the input from Ralphs to Chick-fil-A
+  path = m.CalculateShortestPath_Dijkstra("Target", "Ralphs");
+  std::reverse(gt.begin(),gt.end()); // Reverse the path
+
+  // Print the path lengths
+  std::cout << "My path length: "  << m.CalculatePathLength(path) << "miles" << std::endl;
+  std::cout << "GT path length: " << m.CalculatePathLength(gt) << "miles" << std::endl;
+  EXPECT_EQ(path, gt);
+}
+
+TEST(TrojanMapTest, CalculateShortestPath_Bellman_Ford) {
+  TrojanMap m;
+  
+  // Test from Ralphs to Chick-fil-A
+  auto path = m.CalculateShortestPath_Bellman_Ford("Ralphs", "Target");
+  std::vector<std::string> gt{
+      "578244375",
+    "4380040154",
+    "4380040158",
+    "4380040167",
+    "6805802087",
+    "8410938469",
+    "6813416131",
+    "7645318201",
+    "6813416130",
+    "6813416129",
+    "123318563",
+    "452688940",
+    "6816193777",
+    "123408705",
+    "6816193774",
+    "452688933",
+    "452688931",
+    "123230412",
+    "6816193770",
+    "6787470576",
+    "4015442011",
+    "6816193692",
+    "6816193693",
+    "6816193694",
+    "4015377691",
+    "544693739",
+    "6816193696",
+    "6804883323",
+    "6807937309",
+    "6807937306",
+    "6816193698",
+    "4015377690",
+    "4015377689",
+    "122814447",
+    "6813416159",
+    "6813405266",
+    "4015372488",
+    "4015372487",
+    "6813405229",
+    "122719216",
+    "6813405232",
+    "4015372486",
+    "7071032399",
+    "4015372485",
+    "6813379479",
+    "6813379584",
+    "6814769289",
+    "5237417650"}; // Expected path
+  // Print the path lengths
+  std::cout << "My path length: "  << m.CalculatePathLength(path) << "miles" << std::endl;
+  std::cout << "GT path length: " << m.CalculatePathLength(gt) << "miles" << std::endl;
+  EXPECT_EQ(path, gt);
+  
+  // Reverse the input from Ralphs to Chick-fil-A
+  path = m.CalculateShortestPath_Bellman_Ford("Target", "Ralphs");
+  std::reverse(gt.begin(),gt.end()); // Reverse the path
+
+  // Print the path lengths
+  std::cout << "My path length: "  << m.CalculatePathLength(path) << "miles" << std::endl;
+  std::cout << "GT path length: " << m.CalculatePathLength(gt) << "miles" << std::endl;
+  EXPECT_EQ(path, gt);
+}
+
+
+// // Phase 2: Item-7
+TEST(TrojanMapTest, CycleDetection) {
+  TrojanMap m;
+  
+  std::vector<double> square1 = {-118.299, -118.264, 34.032, 34.011};
+  auto sub1 = m.GetSubgraph(square1);
+  bool result1 = m.CycleDetection(sub1, square1);
+  EXPECT_EQ(result1, true);
+}
+
+
+// Phase2: Item8
+TEST(TrojanMapTest, TopologicalSort) {
+  TrojanMap m;
+  
+  std::vector<std::string> location_names = {"Ralphs", "KFC", "Target", "Chick-fil-A", "Trader"};
+  std::vector<std::vector<std::string>> dependencies = {{"Ralphs","KFC"}, {"Ralphs","Chick-fil-A"}, 
+                                                          {"KFC", "Chick-fil-A"}, {"Target", "Trader"},
+                                                          {"Chick-fil-A", "Trader"}, {"KFC", "Target"},
+                                                          {"Target", "Chick-fil-A"}};
+  auto result = m.DeliveringTrojan(location_names, dependencies);
+  std::vector<std::string> gt ={"Ralphs", "KFC", "Target", "Chick-fil-A", "Trader" };
+  EXPECT_EQ(result, gt);
+}

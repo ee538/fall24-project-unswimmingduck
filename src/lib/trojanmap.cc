@@ -83,8 +83,48 @@ std::pair<double, double> TrojanMap::GetPosition(std::string name) {
  * @param  {std::string} b          : second string
  * @return {int}                    : edit distance between two strings
  */
-int TrojanMap::CalculateEditDistance(std::string a, std::string b) {     
-  return 0;
+int TrojanMap::CalculateEditDistance(std::string a, std::string b) {    
+  // common cases
+  if(a.size() == 0){
+    return b.size();
+  }
+  else if(b.size() == 0){
+    return a.size();
+  }
+
+  int len_a = a.size();
+  int len_b = b.size();
+
+  // construct a matrix that can be used in DP algorithm
+  std::vector<std::vector<int>> result(len_b+1, std::vector<int>(len_a+1));
+  // result matrix:    0 a0 a1 a2 a3 .. an
+  //                 b0
+  //                 b1
+  //                 .
+  //                 .
+  //                 bm  
+
+  // initialization the result matrix
+  for(int j=0; j<= len_a; j++){
+    result[0][j] = j;
+  }
+  for(int i=0; i<=len_b; i++){
+    result[i][0] = i;
+  }
+
+  // using dynamic programming to solve the editdistance between a and b
+  for(int i=1; i<=len_b; i++){
+    for(int j=1; j<=len_a; j++){
+      if(a[j] == b[i]){
+        result[i][j] = result[i-1][j-1];
+      }
+      else{
+        result[i][j] = std::min(result[i-1][j]+1, std::min(result[i][j-1]+1, result[i-1][j-1]+1));
+      }
+    }
+  }
+
+  return result[len_b][len_a];
 }
 
 /**
@@ -96,6 +136,18 @@ int TrojanMap::CalculateEditDistance(std::string a, std::string b) {
  */
 std::string TrojanMap::FindClosestName(std::string name) {
   std::string tmp = ""; // Start with a dummy word
+  int distance = std::numeric_limits<int>::max();
+
+  // iterate all the name and find the smallest edit-distance one
+  for(const auto& pair: name_id_map){
+    int cur_distance = CalculateEditDistance(name, pair.first);
+    if(cur_distance<distance){
+      std::cout << " the pair.first is " << pair.first << ", the pair.second is: " << pair.second << std::endl;
+      tmp = pair.first;
+      distance = cur_distance;
+    }
+  }
+
   return tmp;
 }
 
@@ -129,7 +181,19 @@ std::vector<std::string> TrojanMap::Autocomplete(std::string name) {
  * @return {std::vector<std::string>}  : all unique location categories
  */
 std::vector<std::string> TrojanMap::GetAllCategories() {
-  return {};
+  // 11-13
+    // Test OK, but student_test is lack !!!!
+    std::vector<std::string> res;
+
+    if(categorySet_.size() == 0){
+      construct_categorySet();
+    }
+
+    for(std::string attribute: categorySet_){
+      res.push_back(attribute);
+    }
+
+  return res;
 }
 
 /**
@@ -143,6 +207,10 @@ std::vector<std::string> TrojanMap::GetAllCategories() {
 std::vector<std::string> TrojanMap::GetAllLocationsFromCategory(
     std::string category) {
   std::vector<std::string> res;
+  construct_categoryLocation_map();
+  if(categoryLocations_.find(category) != categoryLocations_.end()){
+    res = categoryLocations_[category];
+  }
   return res;
 }
 
@@ -156,7 +224,13 @@ std::vector<std::string> TrojanMap::GetAllLocationsFromCategory(
  * @return {std::vector<std::string>}     : ids
  */
 std::vector<std::string> TrojanMap::GetLocationRegex(std::regex location) {
-  return {};
+  std::vector<std::string> result;
+  for(const auto& pair: data){
+    if (std::regex_match(pair.second.name, location)) {
+      result.push_back(pair.second.id);
+    }
+  }
+  return result;
 }
 
 /**
@@ -213,6 +287,64 @@ double TrojanMap::CalculatePathLength(const std::vector<std::string> &path) {
 std::vector<std::string> TrojanMap::CalculateShortestPath_Dijkstra(
     std::string location1_name, std::string location2_name) {
   std::vector<std::string> path;
+
+  if(name_id_map.size() == 0){
+    construct_name_id_map();
+  }
+
+  // get the both location ids
+  std::string location1_id = name_id_map[location1_name];
+  std::string location2_id = name_id_map[location2_name];
+
+  // priority queue
+  std::priority_queue<std::pair<double, std::string>, 
+                      std::vector<std::pair<double, std::string>>, 
+                      std::greater<>> pq;
+  // Init priority queue
+  pq.push({0.0, location1_id});
+
+  // init the distance map
+  std::unordered_map<std::string, double> distances;
+  for (const auto &pair : data) {
+    distances[pair.first] = std::numeric_limits<double>::max();
+  }
+  distances[location1_id] = 0.0;
+
+  // root map to track back the shortest path
+  std::unordered_map<std::string, std::string> root;
+
+  while (!pq.empty()) {
+    std::pair<double,std::string> cur_pair = pq.top(); 
+    std::string cur_id = cur_pair.second;
+    // std::cout << "The cur_id is: " << cur_id << std::endl;
+    double prefix_distance = cur_pair.first;
+    pq.pop();
+
+    if(cur_id == location2_id){
+      break;
+    } 
+    
+    for(const auto& neighbor_id: data[cur_id].neighbors){
+      double neighbor_distance = prefix_distance + CalculateDistance(neighbor_id, cur_id);
+       if (neighbor_distance < distances[neighbor_id]) {
+        distances[neighbor_id] = neighbor_distance;
+        root[neighbor_id] = cur_id;
+        pq.push({neighbor_distance, neighbor_id});
+      }
+    }
+  }
+
+  std::cout << " ---- the while loop stop ----- " << std::endl;
+
+  // track back the shortest path
+  for (std::string at = location2_id; at != location1_id; at = root[at]) {
+    // std::cout << "The at id is: " << at << std::endl;
+    path.push_back(at);
+  }
+  path.push_back(location1_id);
+  // reverse the path
+  std::reverse(path.begin(), path.end());
+
   return path;
 }
 
@@ -228,6 +360,83 @@ std::vector<std::string> TrojanMap::CalculateShortestPath_Dijkstra(
 std::vector<std::string> TrojanMap::CalculateShortestPath_Bellman_Ford(
     std::string location1_name, std::string location2_name) {
   std::vector<std::string> path;
+
+  // if(name_id_map.size() == 0){
+  //   construct_name_id_map();
+  // }
+
+  // get the both location ids
+  std::string location1_id = name_id_map[location1_name];
+  std::string location2_id = name_id_map[location2_name];
+
+  // init the distance map
+  std::unordered_map<std::string, double> distances;
+  for (const auto &pair : data) {
+    distances[pair.first] = std::numeric_limits<double>::max();
+  }
+  distances[location1_id] = 0.0;
+
+  // std::cout << "The location1_id distance is " << distances[location1_id] << std::endl;
+
+  // root map to track back the shortest path
+  std::unordered_map<std::string, std::string> root;
+
+  // std::unordered_map<std::string, std::vector<std::pair<std::string, double>>> vertices;
+  // construct_vertice_edge(vertices, location1_id);
+
+  // std::cout << "The size of the vertices is: " << vertices.size() << std::endl;
+
+  for(int i=0; i<data.size(); i++){
+    // std::cout << "The " << i <<"-th iteration" << std::endl;
+    for(const auto& data_pair: data){
+      double prefix_distance = distances[data_pair.first];
+      for(const auto& neighbor_id: data_pair.second.neighbors){
+        double neighbor_distance = CalculateDistance(neighbor_id, data_pair.first);
+        if(neighbor_distance+prefix_distance < distances[neighbor_id]){
+          distances[neighbor_id] = neighbor_distance+prefix_distance;
+          root[neighbor_id] = data_pair.first;
+        }
+      }
+    }
+  }
+
+
+  // for(int i=0; i<vertices.size()-1; i++){
+  //   // std::cout << "The " << i << "-th" << " iteration " << std::endl;
+  //   for(const auto& vertice: vertices){
+  //     double prefix_distance = distances[vertice.first];
+  //     if(vertice.first == location1_id){
+  //       std::cout << "The prefix distance is " << prefix_distance << std::endl;
+  //     }
+  //     for(const auto& neighbor_pair: vertice.second){
+  //       if(vertice.first == location1_id){
+  //         std::cout << "The distance is " << prefix_distance+neighbor_pair.second <<  " the former distance is " << distances[neighbor_pair.first] << std::endl;
+  //       }
+        
+  //       // std::cout << "The neighbour distance is " << neighbor_pair.second << ", the prefix distance is " << prefix_distance << std::endl;  
+  //       if(prefix_distance != std::numeric_limits<double>::max() && prefix_distance+neighbor_pair.second < distances[neighbor_pair.first]){
+  //         std::cout << "Update " << vertice.first << " to " << neighbor_pair.first;
+  //         distances[neighbor_pair.first] = prefix_distance + neighbor_pair.second;
+  //         root[neighbor_pair.first] = vertice.first;
+  //       }
+  //     }
+  //   }
+
+  // }
+
+  // std::cout<<"The for loop stop" << std::endl;
+
+  // track back the shortest path
+  for (std::string at = location2_id; at != location1_id; at = root[at]) {
+    // std::cout << "The at id is: " << at << std::endl;
+    path.push_back(at);
+  }
+  path.push_back(location1_id);
+  // reverse the path
+  std::reverse(path.begin(), path.end());
+
+  
+
   return path;
 }
 
@@ -347,7 +556,36 @@ std::vector<std::string> TrojanMap::DeliveringTrojan(
     std::vector<std::string> &locations,
     std::vector<std::vector<std::string>> &dependencies) {
   std::vector<std::string> result;
-  return result;     
+
+  std::unordered_map<std::string, std::unordered_set<std::string>> relations;
+
+  for(std::string location: locations){
+    std::unordered_set<std::string> child;
+    relations[location] = child;
+  }
+
+  for(std::vector<std::string> dependency: dependencies){
+    std::string name = dependency[0];
+    relations[dependency[0]].insert(dependency[1]);
+  }
+
+  // // cout test to chechk the child set.
+  // // the test result is correct
+  // for(std::string location: locations){
+  //   std::cout << " The " << location << "'s child has: ";
+  //   for(const auto& chid: relations[location]){
+  //     std::cout << chid <<" ";
+  //   }
+  //   std::cout << std::endl;
+  // }
+
+
+  for(const auto& location: locations){
+    std::vector<std::string> tmp;
+    find_relationship(location, relations, tmp, result);
+  }
+
+  return result;
 }
 
 /**
@@ -372,11 +610,21 @@ bool TrojanMap::inSquare(std::string id, std::vector<double> &square) {
  * square
  */
 std::vector<std::string> TrojanMap::GetSubgraph(std::vector<double> &square) {
-  // include all the nodes in subgraph
   std::vector<std::string> subgraph;
+
+  // ##################### written by Yiheng Zhou (Nov-14)
+
+  // iterate all the data
+  for(const auto& pair: data){
+    Node node = pair.second;
+    // if the id is in the square, we add the id into the vector
+    if(node.lon>square[0] && node.lon<square[1] && node.lat<square[2] && node.lat>square[3]){
+      subgraph.push_back(pair.first);
+    }
+  }
+
   return subgraph;
 }
-
 /**
  * Cycle Detection: Given four points of the square-shape subgraph, return true
  * if there is a cycle path inside the square, false otherwise.
@@ -387,6 +635,46 @@ std::vector<std::string> TrojanMap::GetSubgraph(std::vector<double> &square) {
  * @return {bool}: whether there is a cycle or not
  */
 bool TrojanMap::CycleDetection(std::vector<std::string> &subgraph, std::vector<double> &square) {
+  std::unordered_map<std::string, int> subgraph_id;
+  int i=0; 
+  for(const std::string& graph: subgraph){
+    subgraph_id[graph] = i;
+    i++;
+  }
+
+
+  // init the unionFind
+  unionFind uf = unionFind(subgraph_id.size());
+  // iterate all subgraph
+  for(const std::string& graph: subgraph){
+    // ######### written by Nov-15
+
+    int curNode_id = subgraph_id[graph];
+    // using a map to store the root id and the location id of the neighbour
+    std::unordered_map<int, std::string> neighbors_ids;
+    // get all the neighbor
+    for(const auto& neighbor: data[graph].neighbors){
+
+      // filter the location that not in the subgrapgh
+      if(subgraph_id.find(neighbor) != subgraph_id.end()){
+        int special_id = subgraph_id[neighbor];
+        int root_id = uf.find(special_id);
+        // the two neighbour has some root, it will return true
+        if(neighbors_ids.find(root_id) != neighbors_ids.end()){
+          // std::cout<< "two node ids is: " << neighbor << ", " << neighbors_ids[special_id] << std::endl; 
+          return true;
+        }
+        else{ // if not just put the special id and the location id into the neighbors_ids
+          neighbors_ids[root_id] = neighbor;
+        }
+      }
+    }
+
+    for(const auto& pair: neighbors_ids){
+      // std::cout << "THe location id and specical id of curNode is: " << curNode_id << ", " << graph << "THe location id and specical id of subgrapgh is: " << pair.first << ", " << pair.second << std::endl; 
+      uf.unit(curNode_id, subgraph_id[pair.second]);
+    }
+  }
   return false;
 }
 
@@ -514,4 +802,72 @@ void TrojanMap::construct_name_id_map(){
     for(const auto& pair: data){  
       name_id_map[pair.second.name] = pair.first;
   }
+}
+
+
+// the helper function of GetAllCategories() 
+void TrojanMap::construct_categorySet(){
+  for(const auto& pair: data){
+      for(std::string attribute: pair.second.attributes){
+        if(categorySet_.find(attribute) == categorySet_.end()){
+          categorySet_.insert(attribute);
+        }
+      }
+    }
+}
+
+
+void TrojanMap::construct_categoryLocation_map(){
+  // first we should check if the category set is empty or not
+  if(categorySet_.size() == 0){
+    construct_categorySet();
+  }
+
+  // iterate all the data
+  for(const auto& pair: data){
+    
+    Node node = pair.second;
+
+    // iterate all the attributes of the single date and find if the attribute is in the map key
+    // if it is in the key, new a vector and push name of the location into the vector
+    for(std::string attribute : node.attributes){
+      if(categoryLocations_.find(attribute) != categoryLocations_.end()){
+        categoryLocations_[attribute].push_back(node.id);
+      }
+      else{
+        std::vector<std::string> locationNames;
+        locationNames.push_back(node.id);
+        categoryLocations_[attribute] = locationNames;
+      }
+    }
+  }
+}
+
+
+void TrojanMap::find_relationship(std::string location, 
+                                  std::unordered_map<std::string, std::unordered_set<std::string>> relations,
+                                  std::vector<std::string> tmp, std::vector<std::string>& result){
+  // base case
+  if(relations[location].size() == 0){
+
+    // push the tail node into the tmp vector
+    tmp.push_back(location);
+    // assert if the tmp vector is the final result
+    if(tmp.size() > result.size()){
+      result = tmp;
+    }
+
+    // we also should remember to pop the last vector out to avoid influencing other vector
+    tmp.pop_back();
+    return;
+  }
+
+  // push current node to the vector
+  tmp.push_back(location);
+  for(const auto& child: relations[location]){
+    find_relationship(child, relations, tmp, result);
+  }
+  // after we have iterate this level, we should pop the node back, so that it will not make any mistakes
+  tmp.pop_back();
+
 }

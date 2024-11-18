@@ -21,7 +21,7 @@
 
 // --------- new include file ----------
 #include "trietree.h"
-
+#include "unionfind.h"
 
 // A Node is the location of one point in the map.
 class Node {
@@ -81,6 +81,12 @@ class TrojanMap {
 
     std::unordered_map<std::string, std::string> name_id_map;
 
+     // store all the category
+   std::unordered_set<std::string> categorySet_;
+
+   // store all categories and the location that belongs to the category
+   std::unordered_map<std::string, std::vector<std::string>> categoryLocations_;
+
   // -------------------------------------------------------------------------------------------------------------------
 
 
@@ -96,6 +102,20 @@ class TrojanMap {
 
   //construct the name_id_map
   void construct_name_id_map();
+
+  // construct the categorySet_
+  void construct_categorySet();
+
+  // construct the categoryLocation map
+  void construct_categoryLocation_map();
+
+  void construct_vertice_edge(std::unordered_map<std::string, std::vector<std::pair<std::string, double>>>& result, std::string start);
+
+  // using DFS to find the relationship
+  void find_relationship(std::string location, std::unordered_map<std::string, 
+                         std::unordered_set<std::string>> relations, 
+                         std::vector<std::string> tmp, std::vector<std::string>& result);
+
   // ---------------------------------------------------------
   // ---------------------------------------------------------
 

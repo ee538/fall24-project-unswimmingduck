@@ -8,11 +8,19 @@ cc_library(
 )
 
 cc_library(
+    name = "UnionFind",
+    srcs = ["unionfind.cc"],
+    hdrs = ["unionfind.h"],
+    visibility = ["//visibility:public"],    
+)
+
+cc_library(
     name = "TrojanMap",
     srcs = ["trojanmap.cc"],
     hdrs = ["trojanmap.h"],
     data = ["data.csv"],
-    deps = ["//src/lib:TrieTree"],
+    deps = ["//src/lib:TrieTree",
+            "//src/lib:UnionFind"],
     visibility = ["//visibility:public"],
 )
 
