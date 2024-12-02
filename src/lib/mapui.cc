@@ -108,6 +108,7 @@ void MapUI::PrintMenu() {
     for (auto x: output) {
       std::cout << "\""  << x  << "\"" << ", ";
     }
+    std::cout << std::endl;
     PrintMenu();
     break;
   }
@@ -139,6 +140,26 @@ void MapUI::PrintMenu() {
         "**************************************************************\n";
     std::cout << menu << std::endl;
     // fill in here
+    std::string input;
+    getline(std::cin, input);
+    // std::regex regex_pattern(input);
+    // std::cout << "The input is " << input << std::endl;
+    try {
+      std::regex regex_pattern(input); // Invalid pattern
+      std::vector<std::string>result =  map.GetLocationRegex(regex_pattern);
+      // dispose the regex expression is wrong
+      if(result.size() == 0){
+        std::cout << "We cannot find any place using your regex expression. Please check the regex expression again!";
+      }
+      else{
+        for(const auto res: result){
+          std::cout << res << std::endl;
+        }
+      }
+    } catch (const std::regex_error& e) {
+        std::cerr << "Regex error: " << e.what() << std::endl;
+    }
+
     PrintMenu();
     break;
   }
@@ -224,6 +245,7 @@ void MapUI::PrintMenu() {
     getline(std::cin, input);
     square.push_back(atof(input.c_str()));
     auto subgraph = map.GetSubgraph(square);
+    std::cout << "The size of the subgrapgh is " << subgraph.size() << std::endl;
     PlotPointsandEdges(subgraph, square);
     
     auto start = std::chrono::high_resolution_clock::now();
@@ -325,6 +347,13 @@ void MapUI::PrintMenu() {
     if (results.second.size() != 0) {
       for (auto x : results.second[results.second.size()-1]) std::cout << "\"" << x << "\",";
       std::cout << "\nThe distance of the path is:" << results.first << " miles" << std::endl;
+
+      std::cout << "The path is: ";
+      for(auto& location: results.second.back()){
+        std::cout << location << " ";
+      }
+      std::cout << std::endl;
+
       PlotPath(results.second[results.second.size()-1]);
     } else {
       std::cout << "The size of the path is 0" << std::endl;
@@ -347,6 +376,13 @@ void MapUI::PrintMenu() {
     if (results.second.size() != 0) {
       for (auto x : results.second[results.second.size()-1]) std::cout << "\"" << x << "\",";
       std::cout << "\nThe distance of the path is:" << results.first << " miles" << std::endl;
+
+      std::cout << "The path is: ";
+      for(auto& location: results.second.back()){
+        std::cout << location << " ";
+      }
+      std::cout << std::endl;
+
       PlotPath(results.second[results.second.size()-1]);
     } else {
       std::cout << "The size of the path is 0" << std::endl;
@@ -369,6 +405,13 @@ void MapUI::PrintMenu() {
     if (results.second.size() != 0) {
       for (auto x : results.second[results.second.size()-1]) std::cout << "\"" << x << "\",";
       std::cout << "\nThe distance of the path is:" << results.first << " miles" << std::endl;
+      
+      std::cout << "The path is: ";
+      for(auto& location: results.second.back()){
+        std::cout << location << " ";
+      }
+      std::cout << std::endl;
+
       PlotPath(results.second[results.second.size()-1]);
     } else {
       std::cout << "The size of the path is 0" << std::endl;

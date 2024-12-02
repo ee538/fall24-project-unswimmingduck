@@ -1,0 +1,148 @@
+{
+  "context": {
+    "date": "2024-11-26 17:05:58",
+    "host_name": "ubuntu",
+    "executable": "/home/bonanza/.cache/bazel/_bazel_bonanza/4e8da4662bb452c783554d2bf0c0e3c2/execroot/_main/bazel-out/k8-fastbuild/bin/benchmark/benchmark_item4",
+    "num_cpus": 16,
+    "mhz_per_cpu": 3194,
+    "cpu_scaling_enabled": false,
+    "caches": [
+      {
+        "type": "Data",
+        "level": 1,
+        "size": 32768,
+        "num_sharing": 1
+      },
+      {
+        "type": "Instruction",
+        "level": 1,
+        "size": 32768,
+        "num_sharing": 1
+      },
+      {
+        "type": "Unified",
+        "level": 2,
+        "size": 524288,
+        "num_sharing": 1
+      },
+      {
+        "type": "Unified",
+        "level": 3,
+        "size": 16777216,
+        "num_sharing": 4
+      }
+    ],
+    "load_avg": [0.68,0.75,0.62],
+    "library_build_type": "debug"
+  },
+  "benchmarks": [
+    {
+      "name": "BM_Item4/1",
+      "run_name": "BM_Item4/1",
+      "run_type": "iteration",
+      "repetitions": 0,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 82,
+      "real_time": 7.2978909422711628e+06,
+      "cpu_time": 7.2672282317073168e+06,
+      "time_unit": "ns"
+    },
+    {
+      "name": "BM_Item4/2",
+      "run_name": "BM_Item4/2",
+      "run_type": "iteration",
+      "repetitions": 0,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 58,
+      "real_time": 1.1314572959110655e+07,
+      "cpu_time": 1.1285588396551725e+07,
+      "time_unit": "ns"
+    },
+    {
+      "name": "BM_Item4/4",
+      "run_name": "BM_Item4/4",
+      "run_type": "iteration",
+      "repetitions": 0,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 29,
+      "real_time": 2.6410867427957468e+07,
+      "cpu_time": 2.6225060137931045e+07,
+      "time_unit": "ns"
+    },
+    {
+      "name": "BM_Item4/8",
+      "run_name": "BM_Item4/8",
+      "run_type": "iteration",
+      "repetitions": 0,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 12,
+      "real_time": 4.7441800435384117e+07,
+      "cpu_time": 4.7056859250000030e+07,
+      "time_unit": "ns"
+    },
+    {
+      "name": "BM_Item4/16",
+      "run_name": "BM_Item4/16",
+      "run_type": "iteration",
+      "repetitions": 0,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 7,
+      "real_time": 9.7659724099295482e+07,
+      "cpu_time": 9.7657947857142881e+07,
+      "time_unit": "ns"
+    },
+    {
+      "name": "BM_Item4/32",
+      "run_name": "BM_Item4/32",
+      "run_type": "iteration",
+      "repetitions": 0,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 3,
+      "real_time": 1.9046163558959961e+08,
+      "cpu_time": 1.9025987066666663e+08,
+      "time_unit": "ns"
+    },
+    {
+      "name": "BM_Item4/64",
+      "run_name": "BM_Item4/64",
+      "run_type": "iteration",
+      "repetitions": 0,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 2,
+      "real_time": 3.6995315551757812e+08,
+      "cpu_time": 3.6991747250000006e+08,
+      "time_unit": "ns"
+    },
+    {
+      "name": "BM_Item4/128",
+      "run_name": "BM_Item4/128",
+      "run_type": "iteration",
+      "repetitions": 0,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 1,
+      "real_time": 7.8886246681213379e+08,
+      "cpu_time": 7.8801685399999857e+08,
+      "time_unit": "ns"
+    },
+    {
+      "name": "BM_Item4/256",
+      "run_name": "BM_Item4/256",
+      "run_type": "iteration",
+      "repetitions": 0,
+      "repetition_index": 0,
+      "threads": 1,
+      "iterations": 1,
+      "real_time": 2.1139817237854004e+09,
+      "cpu_time": 2.1124985170000005e+09,
+      "time_unit": "ns"
+    }
+  ]
+}

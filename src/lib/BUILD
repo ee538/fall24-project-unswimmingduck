@@ -15,12 +15,20 @@ cc_library(
 )
 
 cc_library(
+    name = "UnionFind_Gas",
+    srcs = ["unionfind_gas.cc"],
+    hdrs = ["unionfind_gas.h"],
+    visibility = ["//visibility:public"],    
+)
+
+cc_library(
     name = "TrojanMap",
     srcs = ["trojanmap.cc"],
     hdrs = ["trojanmap.h"],
     data = ["data.csv"],
     deps = ["//src/lib:TrieTree",
-            "//src/lib:UnionFind"],
+            "//src/lib:UnionFind",
+            "//src/lib:UnionFind_Gas"],
     visibility = ["//visibility:public"],
 )
 

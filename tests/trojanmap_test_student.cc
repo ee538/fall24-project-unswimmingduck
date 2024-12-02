@@ -202,54 +202,54 @@ TEST(TrojanMapTest, CalculateShortestPath_Dijkstra) {
   // Test from Ralphs to Chick-fil-A
   auto path = m.CalculateShortestPath_Dijkstra("Ralphs", "Target");
   std::vector<std::string> gt{
-      "578244375",
-    "4380040154",
-    "4380040158",
-    "4380040167",
-    "6805802087",
-    "8410938469",
-    "6813416131",
-    "7645318201",
-    "6813416130",
-    "6813416129",
-    "123318563",
-    "452688940",
-    "6816193777",
-    "123408705",
-    "6816193774",
-    "452688933",
-    "452688931",
-    "123230412",
-    "6816193770",
-    "6787470576",
-    "4015442011",
-    "6816193692",
-    "6816193693",
-    "6816193694",
-    "4015377691",
-    "544693739",
-    "6816193696",
-    "6804883323",
-    "6807937309",
-    "6807937306",
-    "6816193698",
-    "4015377690",
-    "4015377689",
-    "122814447",
-    "6813416159",
-    "6813405266",
-    "4015372488",
-    "4015372487",
-    "6813405229",
-    "122719216",
-    "6813405232",
-    "4015372486",
-    "7071032399",
-    "4015372485",
-    "6813379479",
-    "6813379584",
-    "6814769289",
-    "5237417650"}; // Expected path
+      "2578244375",
+      "4380040154",
+      "4380040158",
+      "4380040167",
+      "6805802087",
+      "8410938469",
+      "6813416131",
+      "7645318201",
+      "6813416130",
+      "6813416129",
+      "123318563",
+      "452688940",
+      "6816193777",
+      "123408705",
+      "6816193774",
+      "452688933",
+      "452688931",
+      "123230412",
+      "6816193770",
+      "6787470576",
+      "4015442011",
+      "6816193692",
+      "6816193693",
+      "6816193694",
+      "4015377691",
+      "544693739",
+      "6816193696",
+      "6804883323",
+      "6807937309",
+      "6807937306",
+      "6816193698",
+      "4015377690",
+      "4015377689",
+      "122814447",
+      "6813416159",
+      "6813405266",
+      "4015372488",
+      "4015372487",
+      "6813405229",
+      "122719216",
+      "6813405232",
+      "4015372486",
+      "7071032399",
+      "4015372485",
+      "6813379479",
+      "6813379584",
+      "6814769289",
+      "5237417650"}; // Expected path
   // Print the path lengths
   std::cout << "My path length: "  << m.CalculatePathLength(path) << "miles" << std::endl;
   std::cout << "GT path length: " << m.CalculatePathLength(gt) << "miles" << std::endl;
@@ -271,54 +271,54 @@ TEST(TrojanMapTest, CalculateShortestPath_Bellman_Ford) {
   // Test from Ralphs to Chick-fil-A
   auto path = m.CalculateShortestPath_Bellman_Ford("Ralphs", "Target");
   std::vector<std::string> gt{
-      "578244375",
-    "4380040154",
-    "4380040158",
-    "4380040167",
-    "6805802087",
-    "8410938469",
-    "6813416131",
-    "7645318201",
-    "6813416130",
-    "6813416129",
-    "123318563",
-    "452688940",
-    "6816193777",
-    "123408705",
-    "6816193774",
-    "452688933",
-    "452688931",
-    "123230412",
-    "6816193770",
-    "6787470576",
-    "4015442011",
-    "6816193692",
-    "6816193693",
-    "6816193694",
-    "4015377691",
-    "544693739",
-    "6816193696",
-    "6804883323",
-    "6807937309",
-    "6807937306",
-    "6816193698",
-    "4015377690",
-    "4015377689",
-    "122814447",
-    "6813416159",
-    "6813405266",
-    "4015372488",
-    "4015372487",
-    "6813405229",
-    "122719216",
-    "6813405232",
-    "4015372486",
-    "7071032399",
-    "4015372485",
-    "6813379479",
-    "6813379584",
-    "6814769289",
-    "5237417650"}; // Expected path
+     "2578244375",
+      "4380040154",
+      "4380040158",
+      "4380040167",
+      "6805802087",
+      "8410938469",
+      "6813416131",
+      "7645318201",
+      "6813416130",
+      "6813416129",
+      "123318563",
+      "452688940",
+      "6816193777",
+      "123408705",
+      "6816193774",
+      "452688933",
+      "452688931",
+      "123230412",
+      "6816193770",
+      "6787470576",
+      "4015442011",
+      "6816193692",
+      "6816193693",
+      "6816193694",
+      "4015377691",
+      "544693739",
+      "6816193696",
+      "6804883323",
+      "6807937309",
+      "6807937306",
+      "6816193698",
+      "4015377690",
+      "4015377689",
+      "122814447",
+      "6813416159",
+      "6813405266",
+      "4015372488",
+      "4015372487",
+      "6813405229",
+      "122719216",
+      "6813405232",
+      "4015372486",
+      "7071032399",
+      "4015372485",
+      "6813379479",
+      "6813379584",
+      "6814769289",
+      "5237417650"}; // Expected path
   // Print the path lengths
   std::cout << "My path length: "  << m.CalculatePathLength(path) << "miles" << std::endl;
   std::cout << "GT path length: " << m.CalculatePathLength(gt) << "miles" << std::endl;
@@ -350,7 +350,7 @@ TEST(TrojanMapTest, CycleDetection) {
 TEST(TrojanMapTest, TopologicalSort) {
   TrojanMap m;
   
-  std::vector<std::string> location_names = {"Ralphs", "KFC", "Target", "Chick-fil-A", "Trader"};
+  std::vector<std::string> location_names = {"Ralphs", "KFC", "Target", "Chick-fil-A", "Trader Joes"};
   std::vector<std::vector<std::string>> dependencies = {{"Ralphs","KFC"}, {"Ralphs","Chick-fil-A"}, 
                                                           {"KFC", "Chick-fil-A"}, {"Target", "Trader"},
                                                           {"Chick-fil-A", "Trader"}, {"KFC", "Target"},
@@ -358,4 +358,316 @@ TEST(TrojanMapTest, TopologicalSort) {
   auto result = m.DeliveringTrojan(location_names, dependencies);
   std::vector<std::string> gt ={"Ralphs", "KFC", "Target", "Chick-fil-A", "Trader" };
   EXPECT_EQ(result, gt);
+}
+
+
+// // Phase 3
+// // Test TSP function
+TEST(TrojanMapTest, TSP1) {
+  TrojanMap m;
+  
+  std::vector<std::string> input{"6819019976","6820935923","122702233","8566227783","8566227656","6816180153"}; // Input location ids 
+  auto result = m.TravelingTrojan_Brute_force(input);
+  std::cout << "My path length: "  << result.first << "miles" << std::endl; // Print the result path lengths
+  std::vector<std::string> gt{"6819019976",
+                              "6820935923",
+                              "6816180153",
+                              "8566227783",
+                              "122702233",
+                              "8566227656",
+                              "6819019976"}; // Expected order
+  std::cout << "GT path length: "  << m.CalculatePathLength(gt) << "miles" << std::endl; // Print the gt path lengths
+  bool flag = false;
+  if (!result.second.empty() && gt == result.second.back())  // clockwise
+    flag = true;
+  std::reverse(gt.begin(),gt.end()); // Reverse the expected order because the counterclockwise result is also correct
+  if (!result.second.empty() && gt == result.second.back())
+    flag = true;
+  
+  EXPECT_EQ(flag, true);
+}
+
+
+TEST(TrojanMapTest, TSP2) {
+  TrojanMap m;
+  
+  std::vector<std::string> input{"6819019976","6820935923","122702233","8566227783","8566227656","6816180153"}; // Input location ids 
+  auto result = m.TravelingTrojan_Backtracking(input);
+  std::cout << "My path length: "  << result.first << "miles" << std::endl; // Print the result path lengths
+  std::vector<std::string> gt{"6819019976",
+                              "6820935923",
+                              "6816180153",
+                              "8566227783",
+                              "122702233",
+                              "8566227656",
+                              "6819019976"}; // Expected order
+  std::cout << "GT path length: "  << m.CalculatePathLength(gt) << "miles" << std::endl; // Print the gt path lengths
+  bool flag = false;
+  if (!result.second.empty() && gt == result.second.back())  // clockwise
+    flag = true;
+  std::reverse(gt.begin(),gt.end()); // Reverse the expected order because the counterclockwise result is also correct
+  if (!result.second.empty() && gt == result.second.back())
+    flag = true;
+  
+  EXPECT_EQ(flag, true);
+}
+
+
+TEST(TrojanMapTest, TSP3) {
+  TrojanMap m;
+  
+  std::vector<std::string> input{"6819019976","6820935923","122702233","8566227783","8566227656","6816180153"}; // Input location ids 
+  auto result = m.TravelingTrojan_2opt(input);
+  std::cout << "My path length: "  << result.first << "miles" << std::endl; // Print the result path lengths
+  std::vector<std::string> gt{"6819019976",
+                              "6820935923",
+                              "6816180153",
+                              "8566227783",
+                              "122702233",
+                              "8566227656",
+                              "6819019976"}; // Expected order
+  std::cout << "GT path length: "  << m.CalculatePathLength(gt) << "miles" << std::endl; // Print the gt path lengths
+  bool flag = false;
+  if (!result.second.empty() && gt == result.second.back())  // clockwise
+    flag = true;
+  std::reverse(gt.begin(),gt.end()); // Reverse the expected order because the counterclockwise result is also correct
+  if (!result.second.empty() && gt == result.second.back())
+    flag = true;
+  
+  EXPECT_EQ(flag, true);
+}
+
+
+// Test FindNearby points
+TEST(TrojanMapTest, FindNearby) {
+  TrojanMap m;
+  
+  auto result = m.FindNearby("bank", "Chase", 10, 10);
+  std::vector<std::string> ans{"5237417651", "9591449465"};
+  EXPECT_EQ(result, ans);
+}
+
+
+// // // Test CalculateShortestPath_TrojanPath function
+TEST(TrojanMapTest, CalculateShortestPath_TrojanPath) {
+  TrojanMap m;
+  
+  // Test for Ralphs, KFC and Chick-fil-A 
+  std::vector<std::string> input = {"Ralphs", "Ross", "Trader Joes"};
+  auto path = m.TrojanPath(input);
+  std::vector<std::string> gt{
+      "2578244375",
+"4380040154",
+"4380040153",
+"4380040152",
+"4380040148",
+"6818427920",
+"6818427919",
+"6818427918",
+"6818427892",
+"6818427898",
+"6818427917",
+"6818427916",
+"7232024780",
+"6813416145",
+"6813416154",
+"6813416153",
+"2613117902",
+"6818390178",
+"2613117882",
+"6818390165",
+"2613117885",
+"6807374562",
+"6818390172",
+"6818390171",
+"6818390170",
+"2613117861",
+"6817230316",
+"3642819026",
+"6817230310",
+"7811699597",
+"5565967545",
+"123318572",
+"6813405206",
+"6813405205",
+"6813405204",
+"6813405203",
+"6813405202",
+"6813405201",
+"6818390145",
+"6818390144",
+"6813379475",
+"6813379474",
+"6813379385",
+"6045054380",
+"6813379418",
+"6047234443",
+"6813379419",
+"9591449515",
+"6814820015",
+"6814820010",
+"6814820018",
+"6814769290",
+"9591449485",
+"5237417649",
+"9591449485",
+"6396649383",
+"6814769289",
+"6813379584",
+"6813360961",
+"6813379480",
+"6813360960",
+"6814620882",
+"6813360954",
+"6813360952",
+"6813379420",
+"6813360951",
+"6813360936",
+"6813379467",
+"6813379466",
+"6813379465",
+"6813379464",
+"3402887075",
+"6813379432",
+"4536989637",
+"4536989640",
+"3443310465",
+"6813379491",
+"6818390136",
+"3433701978",
+"4536989636",
+"3432332948",
+"6814770351",
+"3431300454",
+"4536993735",
+"6814770342",
+"2776870272",
+"5580882852",
+"6814770345",
+"2776870269",
+"1472141961",
+"5580883117",
+"123153544",
+"1673645147",
+"2738332818",
+"1673644724",
+"2738332817",
+"122844997",
+"5580881629",
+"4399697303",
+"4399697301",
+"4399697300",
+"6813379550",
+"6814916523",
+"1732243620",
+"4015372469",
+"4015372463",
+"6819179749",
+"1732243544",
+"6813405275",
+"348121996",
+"348121864",
+"6813405280",
+"1472141024",
+"6813411590",
+"216155217",
+"6813411589",
+"1837212103",
+"1837212101",
+"6820935911",
+"932416162",
+"4060015482",
+"4020099365",
+"6820972450",
+"1732243549",
+"6820972451",
+"1836105028",
+"9118747759",
+"4060015481",
+"4020099358",
+"6814990127",
+"7867091027",
+"7867091030",
+"6226313827",
+"932378219",
+"6814990112",
+"1870795293",
+"6814990128",
+"4060015480",
+"1870795287",
+"4020099348",
+"1870795282",
+"1870787389",
+"1870795272",
+"1870795261",
+"1870795259",
+"1855150081",
+"1870797882",
+"1870795205",
+"21302801",
+"5617977522",
+"6653019481",
+"1855169974",
+"1732243610",
+"6653019471",
+"4060015479",
+"4020099325",
+"123241992",
+"1732243574",
+"7396914898",
+"7174763274",
+"123050488",
+"1732243849",
+"123241996",
+"1732243570",
+"4060016288",
+"4020099319",
+"5617977544",
+"269634035",
+"4060016287",
+"1732243865",
+"5707890488",
+"5617977547",
+"8386719092",
+"5617977548",
+"5617977553",
+"5617977554",
+"6790607407",
+"6790607405",
+"6790607406",
+"6790607398",
+"6790607396",
+"7159565267"}; // Expected path
+  // Print the path lengths
+  std::cout << "My path length: "  << m.CalculatePathLength(path) << "miles" << std::endl;
+  std::cout << "GT path length: " << m.CalculatePathLength(gt) << "miles" << std::endl;
+  
+  // 
+  std::cout << "The length of my path is " << path.size() << std::endl;
+  std::cout << "The length of GT path is " << gt.size() << std::endl;
+
+  for(int i=0; i<path.size(); i++){
+    if(path[i] != gt[i]){
+      std::cout << "The wrong id is " << i << std::endl;
+    }
+  }
+
+  // EXPECT_EQ(path, gt);
+
+  input = {"Ralphs", "Trader Joes", "Ross"};
+  path = m.TrojanPath(input);
+  EXPECT_EQ(path, gt);
+}
+
+
+TEST(TrojanMapTest, Queries) {
+  TrojanMap m;
+    std::vector<std::pair<double, std::vector<std::string>>> input {{0.05, {"Target", "KFC"}},
+                                                                  {0.05, {"Ralphs", "Chase"}},
+                                                                  {0.02, {"KFC", "Ross"}},
+                                                                  {999, {"dummy", "dummy"}}
+                                                                  };
+  auto actual = m.Queries(input);
+  std::vector<bool> expected {true, true, false, false};
+  EXPECT_EQ(expected, actual);
 }

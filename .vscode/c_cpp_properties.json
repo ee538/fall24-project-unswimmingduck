@@ -10,7 +10,8 @@
         "${workspaceFolder}/opencv/install/include/opencv4",
         "${workspaceFolder}",
         //  "/usr/include",
-        "/usr/local/include"
+        "/usr/local/include",
+        "/usr/src/gtest"
       ]
     }
   ],

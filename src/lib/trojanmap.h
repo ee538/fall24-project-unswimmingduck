@@ -22,6 +22,7 @@
 // --------- new include file ----------
 #include "trietree.h"
 #include "unionfind.h"
+#include "unionfind_gas.h"
 
 // A Node is the location of one point in the map.
 class Node {
@@ -50,16 +51,21 @@ class TrojanMap {
   // Constructor
   TrojanMap() { 
     CreateGraphFromCSVFile(); 
-    
-    // Modified by Yiheng ZHou
+
+     // Modified by Yiheng ZHou
+    // process the data
     CharDataProcess();
 
+    // construct the TrieTree data sturcture
     tree = new TrieTree(char_id);
 
+    // load all name data into TrieTree
     loadName();
 
-    construct_name_id_map();
-    };
+    if(name_id_map.size() == 0){
+      construct_name_id_map();
+    }
+  };
 
   // A map of ids to Nodes.
   std::unordered_map<std::string, Node> data;
@@ -67,8 +73,11 @@ class TrojanMap {
   // ----------------------------- Deconstructor ------------------------------------------
   // because we new TrieTree pointer in the constructor, so we need to release the memeroy
   ~TrojanMap(){
-    delete tree;
-    tree = nullptr;
+    // if(tree != nullptr){
+      delete tree;
+      tree = nullptr;
+    // }
+    
   };
 
 
@@ -116,6 +125,30 @@ class TrojanMap {
                          std::unordered_set<std::string>> relations, 
                          std::vector<std::string> tmp, std::vector<std::string>& result);
 
+  void TravelingTrojan_Brute_force_DFS(int level, double& result_distance,double cur_distance, std::vector<std::string>& subPath, std::vector<std::vector<std::string>>& allpathSets,
+                                        const std::string start_location, std::string cur_location, 
+                                        std::unordered_map<std::string, int> flags
+                                        );
+
+  void TravelingTrojan_Brute_force_DFS_Backtracing(int level, double& result_distance,double cur_distance, std::vector<std::string>& subPath, std::vector<std::vector<std::string>>& allpathSets,
+                                                  const std::string start_location, std::string cur_location, 
+                                                  std::unordered_map<std::string, int> flags
+                                                  );
+
+  std::vector<std::string> swap_function(const std::vector<std::string>& cur_path, int swap_start, int swap_end);
+
+  double calculate_Route_Distance(std::vector<std::string>& route);
+
+  void find_shortestPath_Alllocations(std::vector<std::string>& reuslt, std::vector<std::string> sub_reuslt, std::string cur_location,
+                                               int level, double& result_distance, double cur_distance, 
+                                               std::unordered_map<std::string, int>& locations_flags, 
+                                               std::unordered_map<std::string, std::unordered_map<std::string, double>>& locations_distance);
+
+  std::pair<double, std::vector<std::vector<std::string>>> TravelingTrojan_Genetic_Algorithm(std::vector<std::string> location_ids);
+
+  double calculate_Route_Distance_GA(std::vector<std::string>& route, std::unordered_map<std::string, int> location_specialId, std::vector<std::vector<double>> distanceMatrix);
+
+  std::vector<std::string> mutatedGene(std::vector<std::string> gnome);
   // ---------------------------------------------------------
   // ---------------------------------------------------------
 
@@ -158,7 +191,7 @@ class TrojanMap {
   std::pair<double, double> GetPosition(std::string name);
 
   // Calculate location names' edit distance
-  int CalculateEditDistance(std::string, std::string);
+  int CalculateEditDistance(std::string& a, std::string b);
 
   // Find the closest name
   std::string FindClosestName(std::string name);

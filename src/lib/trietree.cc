@@ -56,29 +56,29 @@ void TrieTree::insert(std::string name, std::string id){
  */
 std::vector<std::string> TrieTree::find(std::string name){
     
-    std::cout<< "the find fucntion is called " << " the input name: " << name << std::endl;
+    // std::cout<< "the find fucntion is called " << " the input name: " << name << std::endl;
 
     std::vector<std::string> res;
 
-    std::cout<< "the vectore res" << std::endl;
+    // std::cout<< "the vectore res" << std::endl;
 
     TrieNode* tmp = node_;
 
-    std::cout<< "the tmp node" << std::endl;
+    // std::cout<< "the tmp node" << std::endl;
 
-    std::cout << "the current level node is " << tmp <<std::endl; 
+    // std::cout << "the current level node is " << tmp <<std::endl; 
 
-    std::cout<< "the length of the name is: " << name.size() << std::endl;
+    // std::cout<< "the length of the name is: " << name.size() << std::endl;
 
     // std::cout<< "the id of e is " << charId_[std::tolower('e')] << std::endl;
 
     // using for loop to get the correct level node
     for(char c: name){
-        std::cout << "the split letter is " << c << std::endl;
+        // std::cout << "the split letter is " << c << std::endl;
         int id = charId_[std::tolower(c)];
-        std::cout << "the char id is " << id << std::endl;
+        // std::cout << "the char id is " << id << std::endl;
         if(tmp->child_[id] ==nullptr){
-            std::cout << "the char " << c << " is not load in the charId";
+            // std::cout << "the char " << c << " is not load in the charId";
             return res;
         }
         tmp = tmp->child_[id];

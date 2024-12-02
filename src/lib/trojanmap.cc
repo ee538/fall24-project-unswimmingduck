@@ -11,7 +11,10 @@
  * @return {double}         : latitude
  */
 double TrojanMap::GetLat(const std::string &id) { 
-  return 0;
+  if(data.find(id) == data.end()){
+    return -1;
+  }
+  return data[id].lat;
 }
 
 /**
@@ -22,7 +25,10 @@ double TrojanMap::GetLat(const std::string &id) {
  * @return {double}         : longitude
  */
 double TrojanMap::GetLon(const std::string &id) {
-  return 0;
+  if(data.find(id) == data.end()){
+    return -1;
+  }
+  return data[id].lon;
 }
 
 /**
@@ -33,6 +39,9 @@ double TrojanMap::GetLon(const std::string &id) {
  * @return {std::string}    : name
  */
 std::string TrojanMap::GetName(const std::string &id) {
+  if(data.find(id) != data.end()){
+    return data[id].name;
+  }
   return "";
 }
 
@@ -44,6 +53,9 @@ std::string TrojanMap::GetName(const std::string &id) {
  * @return {std::vector<std::string>}  : neighbor ids
  */
 std::vector<std::string> TrojanMap::GetNeighborIDs(const std::string &id) {
+  if(data.find(id) != data.end()){
+    return data[id].neighbors;
+  }
   return {};
 }
 
@@ -57,6 +69,14 @@ std::vector<std::string> TrojanMap::GetNeighborIDs(const std::string &id) {
  */
 std::string TrojanMap::GetID(const std::string &name) {
   std::string res = "";
+  // init the name_id_map
+  if(name_id_map.size() == 0){
+    construct_name_id_map();
+  }
+  // assert if the name exists or not
+  if(name_id_map.find(name) != name_id_map.end()){
+    res = name_id_map[name];
+  }
   return res;
 }
 
@@ -69,6 +89,9 @@ std::string TrojanMap::GetID(const std::string &name) {
  */
 std::pair<double, double> TrojanMap::GetPosition(std::string name) {
   std::pair<double, double> results(-1, -1);
+  if(name_id_map.size() == 0){
+    construct_name_id_map();
+  }
   if(name_id_map.find(name) != name_id_map.end()){
     std::string id = name_id_map[name];
     results.first = data[id].lat;
@@ -83,7 +106,7 @@ std::pair<double, double> TrojanMap::GetPosition(std::string name) {
  * @param  {std::string} b          : second string
  * @return {int}                    : edit distance between two strings
  */
-int TrojanMap::CalculateEditDistance(std::string a, std::string b) {    
+int TrojanMap::CalculateEditDistance(std::string& a, std::string b) {    
   // common cases
   if(a.size() == 0){
     return b.size();
@@ -138,11 +161,15 @@ std::string TrojanMap::FindClosestName(std::string name) {
   std::string tmp = ""; // Start with a dummy word
   int distance = std::numeric_limits<int>::max();
 
+  if(name_id_map.size() == 0){
+    construct_name_id_map();
+  }
+
   // iterate all the name and find the smallest edit-distance one
   for(const auto& pair: name_id_map){
     int cur_distance = CalculateEditDistance(name, pair.first);
     if(cur_distance<distance){
-      std::cout << " the pair.first is " << pair.first << ", the pair.second is: " << pair.second << std::endl;
+      // std::cout << " the pair.first is " << pair.first << ", the pair.second is: " << pair.second << std::endl;
       tmp = pair.first;
       distance = cur_distance;
     }
@@ -161,7 +188,10 @@ std::string TrojanMap::FindClosestName(std::string name) {
 std::vector<std::string> TrojanMap::Autocomplete(std::string name) {
   std::vector<std::string> results;
 
-  std::cout<< "the autocomplete is called" << std::endl;
+  // std::cout<< "the autocomplete is called" << std::endl;
+
+ 
+  
 
   // get the all target id
   std::vector<std::string> targetId = tree->find(name);
@@ -334,7 +364,7 @@ std::vector<std::string> TrojanMap::CalculateShortestPath_Dijkstra(
     }
   }
 
-  std::cout << " ---- the while loop stop ----- " << std::endl;
+  // std::cout << " ---- the while loop stop ----- " << std::endl;
 
   // track back the shortest path
   for (std::string at = location2_id; at != location1_id; at = root[at]) {
@@ -455,7 +485,26 @@ std::vector<std::string> TrojanMap::CalculateShortestPath_Bellman_Ford(
 // Please use brute force to implement this function, ie. find all the permutations.
 std::pair<double, std::vector<std::vector<std::string>>> TrojanMap::TravelingTrojan_Brute_force(
                                     std::vector<std::string> location_ids) {
+
   std::pair<double, std::vector<std::vector<std::string>>> records;
+
+  std::unordered_map<std::string, int> flags;
+  for(const auto& location: location_ids){
+    flags[location] = 0;
+  }
+
+  double result_distance = std::numeric_limits<double>::max();
+  std::vector<std::vector<std::string>> progress;
+
+  for(int i=0; i<location_ids.size(); i++){
+    std::vector<std::string> subPath;
+    flags[location_ids[i]] = 1;
+    TravelingTrojan_Brute_force_DFS(0, result_distance, 0, subPath, progress, location_ids[i], location_ids[i], flags);
+  }
+
+  records.first = result_distance;
+  records.second = progress;
+
   return records;
 }
 
@@ -463,13 +512,74 @@ std::pair<double, std::vector<std::vector<std::string>>> TrojanMap::TravelingTro
 std::pair<double, std::vector<std::vector<std::string>>> TrojanMap::TravelingTrojan_Backtracking(
                                     std::vector<std::string> location_ids) {
   std::pair<double, std::vector<std::vector<std::string>>> records;
+
+  std::unordered_map<std::string, int> flags;
+  for(const auto& location: location_ids){
+    flags[location] = 0;
+  }
+
+  double result_distance = std::numeric_limits<double>::max();
+  std::vector<std::vector<std::string>> progress;
+
+  for(int i=0; i<location_ids.size(); i++){
+    std::vector<std::string> subPath;
+    flags[location_ids[i]] = 1;
+    TravelingTrojan_Brute_force_DFS_Backtracing(0, result_distance, 0, subPath, progress, location_ids[i], location_ids[i], flags);
+  }
+
+  records.first = result_distance;
+  records.second = progress;
+
   return records;
 }
 
 // Hint: https://en.wikipedia.org/wiki/2-opt
 std::pair<double, std::vector<std::vector<std::string>>> TrojanMap::TravelingTrojan_2opt(
       std::vector<std::string> location_ids){
-  std::pair<double, std::vector<std::vector<std::string>>> records;
+std::pair<double, std::vector<std::vector<std::string>>> records;
+  
+  // init the result_distance
+  double result_distance = calculate_Route_Distance(location_ids);
+
+  // create a vector to store the finding process
+  std::vector<std::vector<std::string>> process;
+
+  bool improved = true;
+  while (improved) {
+    improved = false;
+    for(int i=1; i<location_ids.size()-1; i++){
+      for(int j=i+1; j<location_ids.size(); j++){
+        // std::vector<std::string> new_route = swap_function(location_ids, i+1, j);
+        std::vector<std::string> new_route = location_ids;
+        std::reverse(new_route.begin()+i, new_route.begin()+j+1);
+        // process.push_back(new_route);
+        double new_distance = calculate_Route_Distance(new_route);
+
+        // #################
+        // std::cout << "The distance is: " << new_distance << std::endl;
+        // std::cout << "the path is ";
+        // for(auto& location: new_route){
+        //   std::cout << location << " "; 
+        // }
+        // std::cout << std::endl;
+        // #################
+
+        if(new_distance < result_distance){
+          // std::cout << "The new distance is " << new_distance << std::endl;
+          std::vector<std::string> save_route = std::vector<std::string>(new_route);
+          save_route.push_back(new_route[0]);
+          process.push_back(save_route);
+          location_ids = new_route;
+          result_distance = new_distance;
+          improved = true;
+        }
+      }
+    }
+  }
+  // update the records
+  records.first = result_distance;
+  records.second = process;
+
   return records;
 }
 
@@ -585,6 +695,10 @@ std::vector<std::string> TrojanMap::DeliveringTrojan(
     find_relationship(location, relations, tmp, result);
   }
 
+  if(result.size() != locations.size()){
+    return {};
+  }
+
   return result;
 }
 
@@ -691,6 +805,52 @@ bool TrojanMap::CycleDetection(std::vector<std::string> &subgraph, std::vector<d
  */
 std::vector<std::string> TrojanMap::FindNearby(std::string attributesName, std::string name, double r, int k) {
   std::vector<std::string> res;
+
+  // check if the name_id_map and categoryLocationSet_ exist or not
+  if(name_id_map.size() == 0){
+    construct_name_id_map();
+    // std::cout << "The size of name_id_map is " << name_id_map.size() << std::endl;
+  }
+  if(categoryLocations_.size() == 0){
+    construct_categoryLocation_map();
+  }
+
+  // build the customized comparetor
+  struct Comapre{
+    bool operator()(std::pair<double, std::string> a, std::pair<double, std::string> b){
+      return a.first > b.first;
+    }
+  };
+  // init the priority queue
+  std::priority_queue<std::pair<double, std::string>, std::vector<std::pair<double, std::string>>, Comapre> pq;
+  std::string center_id = name_id_map[name];
+  // ######################
+  std::cout << "The size of the same attribute location is " << categoryLocations_[attributesName].size() << std::endl;
+   std::cout << "The size of the same name_id_map is " << name_id_map.size() << std::endl;
+  // // ######################
+
+  for(const auto& location_id: categoryLocations_[attributesName]){
+    double distance = CalculateDistance(location_id, center_id);
+    std::cout << "The name is "<< location_id << " The distance is " << distance << " The r is " << r << ", Is the distance < r: "<< (distance<r) << std::endl;
+    if(distance < r && location_id != center_id){
+      pq.push(std::pair<double, std::string>{distance, location_id});
+      std::cout << "The " << location_id << " has push into the pq" << std::endl;
+    }
+  }
+
+  // iterate k times to get 0-th to k-th closest locations
+  for(int i=0; i<k; i++){
+    if(pq.size() != 0){
+       // get the closet location
+      std::pair<double, std::string> target_location = pq.top();
+      pq.pop();
+      res.push_back(target_location.second);
+    }
+    else{
+      break;
+    } 
+  }
+
   return res;
 }
 
@@ -703,7 +863,67 @@ std::vector<std::string> TrojanMap::FindNearby(std::string attributesName, std::
  */
 std::vector<std::string> TrojanMap::TrojanPath(
       std::vector<std::string> &location_names) {
-    std::vector<std::string> res;
+    std::vector<std::string> res={};
+
+     // first using dijkstra alogrithm to get the shortest path between every locations
+    std::unordered_map<std::string, std::unordered_map<std::string, std::vector<std::string>>> location_paths;
+    std::unordered_map<std::string, std::unordered_map<std::string, double>> locations_distance;
+    for(int i=0; i<location_names.size(); i++){
+      for(int j=i+1; j<location_names.size(); j++){
+        // std::cout << " --- Calculate the date between " << location_names[i] << " and " << location_names[j] << std::endl;
+        // get the shortest path
+        std::vector<std::string> path = CalculateShortestPath_Dijkstra(location_names[i], location_names[j]);
+        
+        // update the path map
+        location_paths[location_names[i]][location_names[j]] = std::vector<std::string>(path);
+        std::reverse(path.begin(), path.end());
+        location_paths[location_names[j]][location_names[i]] = path;
+        // update the distance map
+        double distance = CalculatePathLength(path);
+        locations_distance[location_names[i]][location_names[j]] = distance;
+        locations_distance[location_names[j]][location_names[i]] = distance;
+        // std::cout << " --- The process done" << std::endl;
+      }
+    }
+
+    // // ##############################
+    // std::cout << "The size of the path is " << location_paths.size() << std::endl;
+    // for(const auto& distances: locations_distance){
+    //   for(const auto& dis: distances.second){
+    //     std::cout << "The " << distances.first << " is " << dis.second << " to " << dis.first << std::endl;
+    //   }
+    // }
+    // // ##############################
+
+
+    std::unordered_map<std::string, int> locations_flag;
+    for(const auto& location_name: location_names){
+      locations_flag[location_name] = 0;
+    }
+
+    std::vector<std::string> reuslt;
+    double distance = std::numeric_limits<double>::max();
+
+    // using dfs to find the shortest path
+    for(int i=0; i<location_names.size(); i++){
+      std::vector<std::string> sub_result;
+      // std::cout << "The start is " << location_names[i] << std::endl;
+      find_shortestPath_Alllocations(reuslt, sub_result, location_names[i], 0, distance, 0, locations_flag, locations_distance);
+    }
+    
+    // iterate all the result
+    for(int i=1; i<reuslt.size(); i++){
+      // get the sub_path  
+      std::vector<std::string> sub_path = location_paths[reuslt[i-1]][reuslt[i]];
+  
+      if(i>1){
+        // we should remove the repeat location in the middle
+        res.insert(res.end(), sub_path.begin()+1, sub_path.end());
+      }else{
+        res.insert(res.end(), sub_path.begin(), sub_path.end());
+      }
+      
+    }
     return res;
 }
 
@@ -714,7 +934,88 @@ std::vector<std::string> TrojanMap::TrojanPath(
  * @return {std::vector<bool> }      : existence of the path
  */
 std::vector<bool> TrojanMap::Queries(const std::vector<std::pair<double, std::vector<std::string>>>& q) {
-    std::vector<bool> ans(q.size());
+
+    std::vector<bool> ans;
+
+    // construct the name_id map
+    if(name_id_map.size() == 0){
+      construct_name_id_map();
+    }
+
+    // we need to get a hashmap that store the location id and special id
+    std::unordered_map<std::string, int> location_specialId_;
+    int special_id = 0;
+    for(const auto& data_pair: data){
+      location_specialId_[data_pair.first] = special_id;
+      special_id++;
+    }
+    
+    // std::cout << "The size of the location_specailId is " << location_specialId_.size() << std::endl;
+
+    // we need a hashset to store the visited node
+    std::unordered_set<std::string> visited;
+    // we need a vector to store all the distance
+    std::vector<std::pair<double, std::pair<int, int>>> edges;
+    // get all edge
+    for(const auto& data_pair: data){
+      // set the current node to visited
+      visited.insert(data_pair.first);
+
+      // if(data_pair.second.name == "Target"){
+      //   std::cout << "The target node" << std::endl;
+      // }
+
+      // iterate all the neighbor
+      for(const auto& neighbor_id: data_pair.second.neighbors){
+        if(visited.find(neighbor_id) == visited.end()){ // we should affirm that the node we have not visisted before
+          // calculate the distance and push the data pair into the vector
+          if(location_specialId_[data_pair.first] == 16681 || location_specialId_[neighbor_id] == 16681){
+            std::cout << "the id is " << location_specialId_[data_pair.first] << " The distance is " << CalculateDistance(data_pair.first, neighbor_id) << std::endl;
+          }
+          
+          edges.push_back({CalculateDistance(data_pair.first, neighbor_id), {location_specialId_[data_pair.first], location_specialId_[neighbor_id]}});
+        }
+      }
+    }
+
+
+    // std::cout << "The speical id of Target is " << location_specialId_[name_id_map["Target"]] << std::endl;
+    // // ########################
+    // for(const auto& edge: edges){
+    //   if(edge.second.first == 16681 || edge.second.second == 16681){
+    //       std::cout << "The distance between " << edge.second.first << " and " << edge.second.second << " is " << edge.first << std::endl;
+    //   }
+    // }
+
+
+    // we should iterate all the pair
+    for(const auto& q_pair: q){
+      // init the unionfind data
+      unionfind_gas uf_gas = unionfind_gas(data.size());
+      // iterata all the edges and update the unionfind_gas
+      for(const auto& edge: edges){
+        // if(edge.second.first == location_specialId_[name_id_map["Target"]] || edge.second.second == location_specialId_[name_id_map["Target"]]){
+        //   std::cout << "The distance between " << edge.second.first << " and " << edge.second.second << " is " << edge.first << std::endl;
+        // }
+        // std::cout << "the node distance is " << edge.first << " the require distance is " << q_pair.first << std::endl;
+        if(edge.first < q_pair.first){ // if the edge smaller than the required distance
+          // std::cout << "Unit " << edge.second.first << " and " << edge.second.second << std::endl;
+          uf_gas.unit(edge.second.first, edge.second.second);
+        }
+      }
+
+      // we should assert if the input name is vaild or not
+      if(name_id_map.find(q_pair.second[0]) != name_id_map.end() && name_id_map.find(q_pair.second[1]) != name_id_map.end()){
+        // std::cout << "Using uf to assert " << location_specialId_[name_id_map[q_pair.second[0]]] << " and " << location_specialId_[name_id_map[q_pair.second[1]]] << std::endl;
+        // std::cout << "The root of " << location_specialId_[name_id_map[q_pair.second[0]]] << " is " << uf_gas.find(location_specialId_[name_id_map[q_pair.second[0]]]) << " the root of " << location_specialId_[name_id_map[q_pair.second[1]]] << " is " << uf_gas.find(location_specialId_[name_id_map[q_pair.second[1]]]) << std::endl;
+        ans.push_back(uf_gas.same_union(location_specialId_[name_id_map[q_pair.second[0]]], location_specialId_[name_id_map[q_pair.second[1]]]));
+      }
+      else{ // if the input name is invalid, just push false into the res
+        ans.push_back(false);
+      }
+    }
+
+    // std::cout << "The distance is " << CalculateDistance("6814769289", "5237417650") << std::endl;
     return ans;
 }
 
@@ -800,8 +1101,10 @@ void TrojanMap::loadName(){
 
 void TrojanMap::construct_name_id_map(){
     for(const auto& pair: data){  
-      name_id_map[pair.second.name] = pair.first;
-  }
+      if(pair.second.name.size() != 0){
+        name_id_map[pair.second.name] = pair.first;
+      }
+    }
 }
 
 
@@ -870,4 +1173,354 @@ void TrojanMap::find_relationship(std::string location,
   // after we have iterate this level, we should pop the node back, so that it will not make any mistakes
   tmp.pop_back();
 
+}
+
+
+void TrojanMap::TravelingTrojan_Brute_force_DFS(int level, double& result_distance,double cur_distance, std::vector<std::string>& subPath, std::vector<std::vector<std::string>>& allpathSets,
+                                                const std::string start_location, std::string cur_location, 
+                                                std::unordered_map<std::string, int> flags
+                                                ){
+  if(level == flags.size()-1){
+    // add the distance from the last node to the start node
+    cur_distance += CalculateDistance(cur_location, start_location);
+    
+    if(cur_distance<result_distance){
+      subPath.push_back(cur_location);
+      subPath.push_back(start_location);
+      allpathSets.push_back(std::vector<std::string>(subPath));
+      subPath.pop_back();
+      subPath.pop_back();
+    }
+
+    // update the distance
+    result_distance = std::min(result_distance, cur_distance);
+    
+    return;
+  }
+
+  // visit cur_location
+  flags[cur_location] = 1;
+  subPath.push_back(cur_location);
+  // iterate all the location that have not been visited
+  for(const auto& pair: flags){
+    if(pair.second == 0){
+      TravelingTrojan_Brute_force_DFS(level+1,result_distance, cur_distance+CalculateDistance(pair.first, cur_location), 
+                                      subPath, allpathSets, start_location, pair.first, flags);
+    }
+  }
+
+  flags[cur_location] = 0;
+  subPath.pop_back();
+
+}
+
+
+void TrojanMap::TravelingTrojan_Brute_force_DFS_Backtracing(int level, double& result_distance,double cur_distance, std::vector<std::string>& subPath, std::vector<std::vector<std::string>>& allpathSets,
+                                                  const std::string start_location, std::string cur_location, 
+                                                  std::unordered_map<std::string, int> flags
+                                                  ){
+  if(cur_distance>result_distance){
+    // std::cout << "The result distance is " << result_distance << " the cur_distance is " << cur_distance << std::endl; 
+    return;
+  }
+  else if(level == flags.size()-1){
+    // add the distance from the last node to the start node
+    cur_distance += CalculateDistance(cur_location, start_location);
+    if(cur_distance<result_distance){
+      subPath.push_back(cur_location);
+      subPath.push_back(start_location);
+      allpathSets.push_back(std::vector<std::string>(subPath));
+      subPath.pop_back();
+      subPath.pop_back();
+
+      // update the distance
+      result_distance = cur_distance;
+    }
+      
+    return;
+  }
+
+  // visit cur_location
+  flags[cur_location] = 1;
+  subPath.push_back(cur_location);
+  // iterate all the location that have not been visited
+  for(const auto& pair: flags){
+    if(pair.second == 0){
+      TravelingTrojan_Brute_force_DFS_Backtracing(level+1, result_distance, cur_distance+CalculateDistance(pair.first, cur_location), 
+                                      subPath, allpathSets, start_location, pair.first, flags);
+    }
+  }
+
+  flags[cur_location] = 0;
+  subPath.pop_back();
+}
+
+
+std::vector<std::string> TrojanMap::swap_function(const std::vector<std::string>& cur_path, int swap_start, int swap_end){
+  std::vector<std::string> result = std::vector<std::string>(cur_path);
+  while(swap_start < swap_end){
+    // result.swap(swap_start, swap_end);
+    std::string tmp = result[swap_start];
+    result[swap_start] = result[swap_end];
+    result[swap_end] = tmp;
+    swap_start++;
+    swap_end--;
+  }
+  return result;
+}
+
+
+double TrojanMap::calculate_Route_Distance(std::vector<std::string>& route){
+  double result = 0;
+  for(int i=1; i<route.size(); i++){
+    result += CalculateDistance(route[i], route[i-1]);
+  }
+  result += CalculateDistance(route.at(0), route.at(route.size()-1));
+  return result;
+}
+
+
+void TrojanMap::find_shortestPath_Alllocations(std::vector<std::string>& reuslt, std::vector<std::string> sub_reuslt, std::string cur_location,
+                                               int level, double& result_distance, double cur_distance, 
+                                               std::unordered_map<std::string, int>& locations_flags, 
+                                               std::unordered_map<std::string, std::unordered_map<std::string, double>>& locations_distance){
+  // pruning the branches
+  if(cur_distance>result_distance){
+    return;
+  }
+  // base case
+  else if(level == locations_flags.size()-1 && cur_distance<result_distance){
+    // update the sub_result
+    sub_reuslt.push_back(cur_location);
+    // update the result
+    reuslt = sub_reuslt;
+    // update the subresult
+    sub_reuslt.pop_back();
+    result_distance = cur_distance;
+    
+    return;
+  }
+
+  // arriving cur location
+  // update the flags
+  locations_flags[cur_location] = 1;
+  //update the subresult
+  sub_reuslt.push_back(cur_location);
+  //iterate all the un-visisted locations
+  for(const auto& next_location: locations_flags){
+    if(next_location.second != 1){
+      find_shortestPath_Alllocations(reuslt, sub_reuslt, next_location.first, level+1, 
+                                   result_distance, cur_distance+locations_distance[cur_location][next_location.first], 
+                                   locations_flags, locations_distance);
+    }
+  }
+  // after iterate all the un-visited location, we should set the flag of cur_location to 0
+  locations_flags[cur_location] = 0;
+  // we also need to pop the cur_location back from the suv_result
+  sub_reuslt.pop_back();
+}
+
+
+std::pair<double, std::vector<std::vector<std::string>>> TrojanMap::TravelingTrojan_Genetic_Algorithm(std::vector<std::string> location_ids){
+  std::pair<double, std::vector<std::vector<std::string>>> result;
+  int population_size = location_ids.size()*10;
+  
+  int iteration  = location_ids.size()*10;
+  int temperature = 100000;
+  // std::cout << "The init temperature is " << temperature << std::endl;
+
+  std::vector<std::pair<double, std::vector<std::string>>> populationPool_;
+
+  // construct the special id, using map to store the locaiton id and special id
+  std::unordered_map<std::string, int> location_specialId;
+  for(int i=0; i<location_ids.size(); i++){
+    location_specialId[location_ids[i]] = i;
+  }
+
+  std::vector<std::vector<double>> distanceMatrix(location_ids.size(), std::vector<double>(location_ids.size(), 0));
+  // caculate all the distance between two nodes
+  for(int i=0; i<location_ids.size(); i++){
+    for(int j=i+1; j<location_ids.size(); j++){
+      distanceMatrix[i][j] = CalculateDistance(location_ids[i], location_ids[j]);
+      distanceMatrix[j][i] = distanceMatrix[i][j];
+      // ####
+      std::cout << "The distance between " << location_ids[i] << " and " << location_ids[j] << " is " << distanceMatrix[i][j] << std::endl;
+    }
+  }
+
+  std::srand(std::time(0));
+  // init the prelimminary generation
+  for(int i=0; i<population_size; i++){
+    // store the used id
+    std::unordered_set<int> usedId;
+    // store the single chrom
+    std::vector<std::string> chrome;
+    // generate single chrome
+    for(int j=0; j<location_ids.size(); j++){
+      while (true)
+      {
+        int random_num = std::rand() % location_ids.size();
+        // if this random_num has not been used, we can use it
+        if(usedId.find(random_num) == usedId.end()){
+          usedId.insert(random_num);
+          chrome.push_back(location_ids[random_num]);
+          break;
+        } 
+      }
+    }
+
+    // after a chrom done, we should push it into the 
+    populationPool_.push_back({calculate_Route_Distance_GA(chrome, location_specialId, distanceMatrix),chrome});
+  }
+
+  struct comparator_ga
+  {
+    bool operator()(std::pair<double, std::vector<std::string>> input1, std::pair<double, std::vector<std::string>> input2){
+      return input1.first < input2.first;
+    }
+  };
+  
+  std::sort(populationPool_.begin(), populationPool_.end(), comparator_ga());
+
+  
+  int cur_iteration = 0;
+  std::vector<std::vector<std::string>> processSet_;
+  double result_distance = std::numeric_limits<double>::max();
+
+  while( temperature>100 && cur_iteration<(iteration-1)){ // one-epoch iteration
+
+    // #########################
+    std::cout << " ---- " << cur_iteration << "-th " << " to " << iteration <<" iteration epochs ----- " << std::endl;
+    std::cout << "the temperature is " << temperature << std::endl;
+    // for(const auto& gnome_pair: populationPool_){
+    //   std::cout << "The distance is " << gnome_pair.first << ", the path is: ";
+    //   for(const auto& gnome: gnome_pair.second){
+    //     std::cout << gnome << " ";
+    //   }
+    //   std::cout << std::endl;
+    // }
+    // #########################
+
+    // new popultaionPool_
+    std::vector<std::pair<double, std::vector<std::string>>> new_populationPool_;
+    // iterate all the population_size 
+    for(int i=0; i<populationPool_.size(); i++){
+      // get the current gnome
+      std::pair<double, std::vector<std::string>> cur_gnome = populationPool_[i];
+
+      // #######################
+      // std::cout << "The distance is " << cur_gnome.first << " the path is ";
+      // for(const auto& gnome: cur_gnome.second){
+      //   std::cout << gnome << " ";
+      // }
+      // std::cout << std::endl;
+      // #######################
+
+      // mutate this gnome
+      while (true)
+      { 
+        // #####
+        // std::cout << "THe mutatedGene function start" << std::endl;
+        // #####
+
+        // generate new gnome
+        std::vector<std::string> new_gnome = mutatedGene(cur_gnome.second);
+
+        // ###############
+        // std::cout << "The mutatedGene end" << std::endl;
+        // ###############
+
+        // assert if the new_gnome has short length
+        double new_distance = calculate_Route_Distance_GA(new_gnome, location_specialId, distanceMatrix);
+        // std::cout << "The new distance is " << new_distance << std::endl;
+        // ###########
+        // std::cout << "the new gnome is ";
+        // for(const auto& newG: new_gnome){
+        //   std::cout << newG << " ";
+        // }
+        // std::cout << std::endl;
+        // std::cout << "The new distance is " << new_distance << " and the cur_gnome distance is " << cur_gnome.first << std::endl;
+        // ###########
+
+        if(new_distance < cur_gnome.first){
+          new_populationPool_.push_back({new_distance, new_gnome});
+          break;
+        }
+        else{
+          // Accepting the rejected children at
+          // a possible probability above threshold.
+          float prob = pow(2.7,
+                          -1 * ((float)(new_distance - cur_gnome.first)/temperature));
+          // ###############
+          // std::cout << "The temperature is " << temperature << std::endl;
+          // std::cout << "THe pro is " << prob << ", (float)(new_distance - cur_gnome.first)/temperature) is " << (float)(new_distance - cur_gnome.first)/temperature <<  std::endl;
+          // ###############
+
+          if (prob > 0.5) {
+              new_populationPool_.push_back({new_distance, new_gnome});
+              break;
+          }
+        }
+      }
+      // std::cout << "The while loop break" << std::endl;
+    }
+
+
+
+    // tmperature decreasing
+    temperature = (int)(90*temperature)/100;
+    // update the populationPool 
+    populationPool_ = new_populationPool_;
+    std::sort(populationPool_.begin(), populationPool_.end(), comparator_ga());
+    // record the shortest path in every iteration
+    if(populationPool_[0].first < result_distance){
+      result_distance = populationPool_[0].first;
+      processSet_.push_back(populationPool_[0].second);
+    }
+    
+    std::cout << "The shortest distance is " << populationPool_[0].first << std::endl;
+    std::cout<< " ----- " << cur_iteration << "-th epochs end ---- " << std::endl; 
+
+    // update the iteration
+    cur_iteration++;
+
+    
+  }
+  result.first = result_distance;
+  result.second = processSet_;
+  return result;
+
+}
+
+
+
+double TrojanMap::calculate_Route_Distance_GA(std::vector<std::string>& route, std::unordered_map<std::string, int> location_specialId, std::vector<std::vector<double>> distanceMatrix){
+  double result = 0;
+  for(int i=1; i<route.size(); i++){
+    result += distanceMatrix[location_specialId[route[i]]][location_specialId[route[i-1]]];
+  }
+  result += distanceMatrix[location_specialId[route[0]]][location_specialId[route[route.size()-1]]];
+  return result;  
+}
+
+
+std::vector<std::string> TrojanMap::mutatedGene(std::vector<std::string> gnome){
+  // std::srand(std::time(0));
+  std::vector<std::string> new_gnome(gnome);
+  // avoid random number is the same
+  while (true) {
+    int random_num1 = std::rand() % (gnome.size()-1);
+    int random_num2 = std::rand() % (gnome.size()-1);
+    // std::cout << "The size of the gnome is " << gnome.size() << std::endl;
+    // std::cout << "The random num is " << random_num1 << " and " << random_num2 << std::endl;
+    if (random_num1 != random_num2) {
+      // std::cout << "go into the if condition function" << std::endl;
+      std::string tmp = new_gnome[random_num1];
+      new_gnome[random_num1] = new_gnome[random_num2];
+      new_gnome[random_num2] = tmp;
+      break;
+    }
+  }
+  // std::cout << "The while loop break" << std::endl;
+  return new_gnome;
 }
