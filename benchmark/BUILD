@@ -48,3 +48,23 @@ cc_binary(
         "//src/lib:TrojanMap",
     ],
 )
+
+
+cc_binary(
+    name = "benchmark_item9",
+    srcs = ["benchmark_item9.cc"],
+    deps = [
+        "@com_google_benchmark//:benchmark",
+        "//src/lib:TrojanMap",
+    ],
+)
+
+
+cc_binary(
+    name = "benchmark_item10",
+    srcs = ["benchmark_item10.cc"],
+    deps = [
+        "@com_google_benchmark//:benchmark",
+        "//src/lib:TrojanMap",
+    ],
+)

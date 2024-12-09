@@ -52,6 +52,6 @@ void unionfind_gas::unit(int p, int q){
 
 
 bool unionfind_gas::same_union(int p, int q){
-    std::cout << "The root of " << p << " is " << find(p) << " the root of " << q << " is " << find(q) << std::endl;
+    // std::cout << "The root of " << p << " is " << find(p) << " the root of " << q << " is " << find(q) << std::endl;
     return find(p) == find(q);
 }

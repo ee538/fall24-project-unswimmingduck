@@ -1390,8 +1390,8 @@ std::pair<double, std::vector<std::vector<std::string>>> TrojanMap::TravelingTro
   while( temperature>100 && cur_iteration<(iteration-1)){ // one-epoch iteration
 
     // #########################
-    std::cout << " ---- " << cur_iteration << "-th " << " to " << iteration <<" iteration epochs ----- " << std::endl;
-    std::cout << "the temperature is " << temperature << std::endl;
+    std::cout << " ---- " << cur_iteration << "-th " << "of " << iteration <<" iteration epochs ----- " << std::endl;
+    // std::cout << "the temperature is " << temperature << std::endl;
     // for(const auto& gnome_pair: populationPool_){
     //   std::cout << "The distance is " << gnome_pair.first << ", the path is: ";
     //   for(const auto& gnome: gnome_pair.second){
@@ -1479,7 +1479,7 @@ std::pair<double, std::vector<std::vector<std::string>>> TrojanMap::TravelingTro
     }
     
     std::cout << "The shortest distance is " << populationPool_[0].first << std::endl;
-    std::cout<< " ----- " << cur_iteration << "-th epochs end ---- " << std::endl; 
+    std::cout<< " --------------------- " << std::endl; 
 
     // update the iteration
     cur_iteration++;

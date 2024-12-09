@@ -178,45 +178,53 @@ void MapUI::PrintMenu() {
     std::cout << menu;
     std::string input2;
     getline(std::cin, input2);
-    auto start = std::chrono::high_resolution_clock::now();
-    auto results = map.CalculateShortestPath_Dijkstra(input1, input2);
-    auto stop = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-    menu = "*************************Dijkstra*****************************\n";
-    std::cout << menu;
-    menu = "*************************Results******************************\n";
-    std::cout << menu;
-    if (results.size() != 0) {
-      for (auto x : results) std::cout << "\"" << x << "\",";
-      std::cout << "\nThe distance of the path is:" << map.CalculatePathLength(results) << " miles" << std::endl;
-      PlotPath(results);
-    } else {
-      std::cout << "No route from the start point to the destination."
-                << std::endl;
-    }
-    menu = "**************************************************************\n";
-    std::cout << menu;
-    std::cout << "Time taken by function: " << duration.count()/1000 << " ms" << std::endl << std::endl;
+    // std::vector<std::vector<std::string>> inputs = {{"Chase", "Ralphs"}, {"Chase", "Trader Joes"}, {"Chase", "Chick-fil-A"}, {"Chick-fil-A", "Target"}, {"Chick-fil-A", "KFC"}, {"Chick-fil-A", "Ross"}, {"Chick-fil-A", "Ralphs"}, {"Chick-fil-A", "Trader Joes"}, {"KFC", "Trader Joes"}};
+    // for(int i=0; i<inputs.size(); i++){
+      // std::string input1 = inputs[i][0];
+      // std::string input2 = inputs[i][1];
+      std::cout << "----- This is " << input1 << " to " << input2 << std::endl;
+      auto start = std::chrono::high_resolution_clock::now();
+      auto results = map.CalculateShortestPath_Dijkstra(input1, input2);
+      auto stop = std::chrono::high_resolution_clock::now();
+      auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+      menu = "*************************Dijkstra*****************************\n";
+      std::cout << menu;
+      menu = "*************************Results******************************\n";
+      std::cout << menu;
+      if (results.size() != 0) {
+        for (auto x : results) std::cout << "\"" << x << "\",";
+        std::cout << "\nThe distance of the path is:" << map.CalculatePathLength(results) << " miles" << std::endl;
+        PlotPath(results);
+      } else {
+        std::cout << "No route from the start point to the destination."
+                  << std::endl;
+      }
+      menu = "**************************************************************\n";
+      std::cout << menu;
+      std::cout << "Time taken by function: " << duration.count()/1000 << " ms" << std::endl << std::endl;
 
-    start = std::chrono::high_resolution_clock::now();
-    results = map.CalculateShortestPath_Bellman_Ford(input1, input2);
-    stop = std::chrono::high_resolution_clock::now();
-    duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-    menu = "*************************Bellman_Ford*************************\n";
-    std::cout << menu;
-    menu = "*************************Results******************************\n";
-    std::cout << menu;
-    if (results.size() != 0) {
-      for (auto x : results) std::cout << "\"" << x << "\",";
-      std::cout << "\nThe distance of the path is:" << map.CalculatePathLength(results) << " miles" << std::endl;
-      PlotPath(results);
-    } else {
-      std::cout << "No route from the start point to the destination."
-                << std::endl;
-    }
-    menu = "**************************************************************\n";
-    std::cout << menu;
-    std::cout << "Time taken by function: " << duration.count()/1000 << " ms" << std::endl << std::endl;
+      start = std::chrono::high_resolution_clock::now();
+      results = map.CalculateShortestPath_Bellman_Ford(input1, input2);
+      stop = std::chrono::high_resolution_clock::now();
+      duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+      menu = "*************************Bellman_Ford*************************\n";
+      std::cout << menu;
+      menu = "*************************Results******************************\n";
+      std::cout << menu;
+      if (results.size() != 0) {
+        for (auto x : results) std::cout << "\"" << x << "\",";
+        std::cout << "\nThe distance of the path is:" << map.CalculatePathLength(results) << " miles" << std::endl;
+        PlotPath(results);
+      } else {
+        std::cout << "No route from the start point to the destination."
+                  << std::endl;
+      }
+      menu = "**************************************************************\n";
+      std::cout << menu;
+      std::cout << "Time taken by function: " << duration.count()/1000 << " ms" << std::endl << std::endl;
+      std::cout << " ------ end ------ " << std::endl;
+    // }
+    
 
     PrintMenu();
     break;

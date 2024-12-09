@@ -16,7 +16,7 @@ static void BM_Item10(benchmark::State& state) {
   for (auto _ : state) {
     // This code gets timed
     for(int i=0; i<state.range(0); i++){
-        trojanmap.FindNearby(selecPool_[i][0], selecPool_[i][1], selecPool_[i][2], selecPool_[i][3]);
+        map.FindNearby(selectPool_[i][0], selectPool_[i][1], (double)selectPool_[i][2], selectPool_[i][3]);
     }   
   }
 }

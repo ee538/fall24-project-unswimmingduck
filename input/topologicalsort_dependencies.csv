@@ -1,4 +1,19 @@
 Source, Destination
 Ralphs,Chick-fil-A
 Ralphs,KFC
-Chick-fil-A,KFC
+KFC,Chick-fil-A
+Chick-fil-A,Arco
+Chick-fil-A,Chase
+Arco,Chase
+Chick-fil-A,Ross
+Ralphs,Ross
+Chase,Ross
+Ralphs,Target
+KFC,Target
+Chase,Target
+Ross,Target
+Ross,Trader Joes
+Chase,Trader Joes
+Target,Trader Joes
+Trader Joes,Chipotle
+Chipotle,Pico
