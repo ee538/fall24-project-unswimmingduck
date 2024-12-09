@@ -590,11 +590,8 @@ std::vector<std::string> TrojanMap::TrojanPath(std::vector<std::string> &locatio
 In order to finding the shortest path, I using DFS algorithm to achieve this goal. Using recurrsion to finding all possible paths and finding the shortest distance path. What's more, I also apply backtracing to cutting branches and shrink the runtime.
 
 ### Runtime Report
-| number of node| RunTime|
-| -------------------- | ----------- |-------|-----|
-|5| 221 ms
-|6| 515 ms
-|7|662 ms
+![image](https://github.com/user-attachments/assets/0c081f38-ddce-49a6-bbd2-ada8e9948d06)
+
 
 ### Result 
 ![c71fac6f1b89ae9994778c5d3fb9c38](https://github.com/user-attachments/assets/ba333066-22be-4b50-837e-a7d61227e419)
@@ -643,8 +640,5 @@ In the function, we will iterate all the location and caculate the distance betw
 Assume that the number of data is n, **the Runtime Complexity is O(n)**. This is because the function should iterate all nodes and use unionfind to store their relationship
 
 ### RunTime Report
-| number of node| RunTime|
-| -------------------- | ----------- |-------|-----|
-|3| 88 ms
-|4| 92 ms
-|5| 93 ms
+![image](https://github.com/user-attachments/assets/de7b8ecb-65dc-4b7f-8baa-942a1cbc8ef0)
+
