@@ -545,6 +545,211 @@ With backtracing, I add one more comparing condition in recursion base case. In 
 The core of 2-opt method is changing the edge. In every iteration, we will change two edges and see if the distance of the path will be shrinked or not. If the distance will decrease, we make the change and still do the operation of changing edge until the distance dosen't decreas anymore. The mechanism detail of this method is shown in the belowing picture.
 ![image](https://github.com/user-attachments/assets/76ffe923-6aed-4687-85f1-3602dd89cbf3)
 
+#### Genetic algorithm 
+Firstly, we should set a prelimenary group and iteration time. In every iteration, we can mutate new chromosome. After caculating the fitness of new chromosome, we decide wether we should keep the new chromosome in the population pool. After repeating the epoch, we can get the final result.
+In this question, the chromosome is the order to visit all locations and the fitness is the distance of the path. The following output shows how the genetic algorithm update the distance after iteration.
+```
+ ---- 0-th of 80 iteration epochs ----- 
+The shortest distance is 7.98073
+ --------------------- 
+ ---- 1-th of 80 iteration epochs ----- 
+The shortest distance is 7.65014
+ --------------------- 
+ ---- 2-th of 80 iteration epochs ----- 
+The shortest distance is 7.6772
+ --------------------- 
+ ---- 3-th of 80 iteration epochs ----- 
+The shortest distance is 7.88527
+ --------------------- 
+ ---- 4-th of 80 iteration epochs ----- 
+The shortest distance is 7.80281
+ --------------------- 
+ ---- 5-th of 80 iteration epochs ----- 
+The shortest distance is 6.75754
+ --------------------- 
+ ---- 6-th of 80 iteration epochs ----- 
+The shortest distance is 6.81721
+ --------------------- 
+ ---- 7-th of 80 iteration epochs ----- 
+The shortest distance is 6.75754
+ --------------------- 
+ ---- 8-th of 80 iteration epochs ----- 
+The shortest distance is 7.68151
+ --------------------- 
+ ---- 9-th of 80 iteration epochs ----- 
+The shortest distance is 7.40331
+ --------------------- 
+ ---- 10-th of 80 iteration epochs ----- 
+The shortest distance is 7.40331
+ --------------------- 
+ ---- 11-th of 80 iteration epochs ----- 
+The shortest distance is 7.68151
+ --------------------- 
+ ---- 12-th of 80 iteration epochs ----- 
+The shortest distance is 7.86325
+ --------------------- 
+ ---- 13-th of 80 iteration epochs ----- 
+The shortest distance is 7.72857
+ --------------------- 
+ ---- 14-th of 80 iteration epochs ----- 
+The shortest distance is 7.9992
+ --------------------- 
+ ---- 15-th of 80 iteration epochs ----- 
+The shortest distance is 7.20543
+ --------------------- 
+ ---- 16-th of 80 iteration epochs ----- 
+The shortest distance is 7.12609
+ --------------------- 
+ ---- 17-th of 80 iteration epochs ----- 
+The shortest distance is 7.30877
+ --------------------- 
+ ---- 18-th of 80 iteration epochs ----- 
+The shortest distance is 7.91879
+ --------------------- 
+ ---- 19-th of 80 iteration epochs ----- 
+The shortest distance is 7.20543
+ --------------------- 
+ ---- 20-th of 80 iteration epochs ----- 
+The shortest distance is 7.78581
+ --------------------- 
+ ---- 21-th of 80 iteration epochs ----- 
+The shortest distance is 7.82396
+ --------------------- 
+ ---- 22-th of 80 iteration epochs ----- 
+The shortest distance is 6.81721
+ --------------------- 
+ ---- 23-th of 80 iteration epochs ----- 
+The shortest distance is 7.54898
+ --------------------- 
+ ---- 24-th of 80 iteration epochs ----- 
+The shortest distance is 7.92975
+ --------------------- 
+ ---- 25-th of 80 iteration epochs ----- 
+The shortest distance is 7.52633
+ --------------------- 
+ ---- 26-th of 80 iteration epochs ----- 
+The shortest distance is 7.90701
+ --------------------- 
+ ---- 27-th of 80 iteration epochs ----- 
+The shortest distance is 7.97551
+ --------------------- 
+ ---- 28-th of 80 iteration epochs ----- 
+The shortest distance is 8.03198
+ --------------------- 
+ ---- 29-th of 80 iteration epochs ----- 
+The shortest distance is 7.32845
+ --------------------- 
+ ---- 30-th of 80 iteration epochs ----- 
+The shortest distance is 7.12609
+ --------------------- 
+ ---- 31-th of 80 iteration epochs ----- 
+The shortest distance is 8.14728
+ --------------------- 
+ ---- 32-th of 80 iteration epochs ----- 
+The shortest distance is 7.32398
+ --------------------- 
+ ---- 33-th of 80 iteration epochs ----- 
+The shortest distance is 7.69776
+ --------------------- 
+ ---- 34-th of 80 iteration epochs ----- 
+The shortest distance is 7.5925
+ --------------------- 
+ ---- 35-th of 80 iteration epochs ----- 
+The shortest distance is 7.67725
+ --------------------- 
+ ---- 36-th of 80 iteration epochs ----- 
+The shortest distance is 7.72857
+ --------------------- 
+ ---- 37-th of 80 iteration epochs ----- 
+The shortest distance is 6.81721
+ --------------------- 
+ ---- 38-th of 80 iteration epochs ----- 
+The shortest distance is 7.20543
+ --------------------- 
+ ---- 39-th of 80 iteration epochs ----- 
+The shortest distance is 6.75754
+ --------------------- 
+ ---- 40-th of 80 iteration epochs ----- 
+The shortest distance is 8.03198
+ --------------------- 
+ ---- 41-th of 80 iteration epochs ----- 
+The shortest distance is 8.00664
+ --------------------- 
+ ---- 42-th of 80 iteration epochs ----- 
+The shortest distance is 7.82396
+ --------------------- 
+ ---- 43-th of 80 iteration epochs ----- 
+The shortest distance is 8.00664
+ --------------------- 
+ ---- 44-th of 80 iteration epochs ----- 
+The shortest distance is 7.82163
+ --------------------- 
+ ---- 45-th of 80 iteration epochs ----- 
+The shortest distance is 7.64923
+ --------------------- 
+ ---- 46-th of 80 iteration epochs ----- 
+The shortest distance is 7.52713
+ --------------------- 
+ ---- 47-th of 80 iteration epochs ----- 
+The shortest distance is 7.64923
+ --------------------- 
+ ---- 48-th of 80 iteration epochs ----- 
+The shortest distance is 7.70119
+ --------------------- 
+ ---- 49-th of 80 iteration epochs ----- 
+The shortest distance is 7.6772
+ --------------------- 
+ ---- 50-th of 80 iteration epochs ----- 
+The shortest distance is 7.69595
+ --------------------- 
+ ---- 51-th of 80 iteration epochs ----- 
+The shortest distance is 7.65014
+ --------------------- 
+ ---- 52-th of 80 iteration epochs ----- 
+The shortest distance is 6.75754
+ --------------------- 
+ ---- 53-th of 80 iteration epochs ----- 
+The shortest distance is 7.5925
+ --------------------- 
+ ---- 54-th of 80 iteration epochs ----- 
+The shortest distance is 7.72857
+ --------------------- 
+ ---- 55-th of 80 iteration epochs ----- 
+The shortest distance is 7.67725
+ --------------------- 
+ ---- 56-th of 80 iteration epochs ----- 
+The shortest distance is 7.32845
+ --------------------- 
+ ---- 57-th of 80 iteration epochs ----- 
+The shortest distance is 7.32845
+ --------------------- 
+ ---- 58-th of 80 iteration epochs ----- 
+The shortest distance is 7.69595
+ --------------------- 
+ ---- 59-th of 80 iteration epochs ----- 
+The shortest distance is 7.73686
+ --------------------- 
+ ---- 60-th of 80 iteration epochs ----- 
+The shortest distance is 7.7823
+ --------------------- 
+ ---- 61-th of 80 iteration epochs ----- 
+The shortest distance is 7.9289
+ --------------------- 
+ ---- 62-th of 80 iteration epochs ----- 
+The shortest distance is 8.04579
+ --------------------- 
+ ---- 63-th of 80 iteration epochs ----- 
+The shortest distance is 8.01351
+ --------------------- 
+ ---- 64-th of 80 iteration epochs ----- 
+The shortest distance is 7.69776
+ --------------------- 
+ ---- 65-th of 80 iteration epochs ----- 
+The shortest distance is 7.80281
+ --------------------- 
+My path length: 6.75754miles
+```
+
 ### Result
 
 | Number of node      | BruteForce | BruteForce with Backtracing| 2-opt|
